@@ -6,7 +6,7 @@ const RoleBasedRoute = ({ isAdminRequired }) => {
   const { user } = useSelector((state) => state.auth);
 
   if (!user) {
-    return <Navigate to="/login" />;
+    return null; // Stay on the same page if the user is not authenticated
   }
 
   if (isAdminRequired && !user.is_admin) {

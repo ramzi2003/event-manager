@@ -3,11 +3,10 @@ import LoginPage from "../pages/LoginPage";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import RoleBasedRoute from "./RoleBasedRoute";
-import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux'; //import useSelector
 
 const AppRoutes = () => {
-  const { user } = useSelector((state) => state.auth);
-
+  const { user } = useSelector((state) => state.auth); //get user from redux
   return (
     <Routes>
       <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
@@ -17,22 +16,12 @@ const AppRoutes = () => {
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<div>Dashboard Component Here</div>} />
-        <Route
-          path="/view-all-events"
-          element={
-            <RoleBasedRoute isAdminRequired={true}>
-              <div>View all events Component Here</div>
-            </RoleBasedRoute>
-          }
-        />
-        <Route
-          path="/tasks"
-          element={
-            <RoleBasedRoute isAdminRequired={false}>
-              <div>Tasks Component Here</div>
-            </RoleBasedRoute>
-          }
-        />
+        <Route element={<RoleBasedRoute isAdminRequired={true} />}>
+          <Route path="/view-all-events" element={<div>View all events Component Here</div>} />
+        </Route>
+        <Route element={<RoleBasedRoute isAdminRequired={false} />}>
+          <Route path="/tasks" element={<div>Tasks Component Here</div>} />
+        </Route>
       </Route>
     </Routes>
   );

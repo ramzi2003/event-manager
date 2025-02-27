@@ -1,10 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "../services/authService";
 
-const user = JSON.parse(localStorage.getItem("user"));
-
 const initialState = {
-  user: user ? user : null,
+  user: authService.getCurrentUser(), // Use authService.getCurrentUser()
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -15,7 +13,10 @@ export const login = createAsyncThunk(
   "auth/login",
   async (credentials, thunkAPI) => {
     try {
-      return await authService.login(credentials);
+      const response = await authService.login(credentials);
+      const accessToken = response.access;
+      const userInfo = await authService.fetchUserInfo(accessToken);
+      return { ...response, ...userInfo };
     } catch (error) {
       const message =
         (error.response &&
@@ -31,6 +32,25 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk("auth/logout", async () => {
   await authService.logout();
 });
+
+export const fetchUserInfo = createAsyncThunk(
+  "auth/userInfo",
+  async (_, thunkAPI) => {
+    try {
+      const { accessToken } = thunkAPI.getState().auth.user;
+      const userInfo = await authService.fetchUserInfo(accessToken);
+      return userInfo;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue({ message });
+    }
+  }
+);
 
 export const authSlice = createSlice({
   name: "auth",
@@ -61,6 +81,19 @@ export const authSlice = createSlice({
       })
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
+      })
+      .addCase(fetchUserInfo.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchUserInfo.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = { ...state.user, ...action.payload };
+        console.log("User info updated in Redux:", state.user);
+      })
+      .addCase(fetchUserInfo.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
   },
 });
