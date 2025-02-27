@@ -52,6 +52,25 @@ export const fetchUserInfo = createAsyncThunk(
   }
 );
 
+export const refreshToken = createAsyncThunk(
+  "auth/refreshToken",
+  async (_, thunkAPI) => {
+    try {
+      const newAccessToken = await authService.refreshToken();
+      const userInfo = await authService.fetchUserInfo(newAccessToken);
+      return { accessToken: newAccessToken, ...userInfo };
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue({ message });
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -91,6 +110,19 @@ export const authSlice = createSlice({
         console.log("User info updated in Redux:", state.user);
       })
       .addCase(fetchUserInfo.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(refreshToken.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(refreshToken.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = { ...state.user, ...action.payload };
+      })
+      .addCase(refreshToken.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

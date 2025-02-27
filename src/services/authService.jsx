@@ -47,11 +47,32 @@ const fetchUserInfo = async (accessToken) => {
   }
 };
 
+const refreshToken = async () => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  if (!refreshToken) {
+    throw new Error("No refresh token available");
+  }
+
+  try {
+    const response = await axios.post(`${API_URL}auth/jwt/refresh/`, {
+      refresh: refreshToken,
+    });
+    if (response.data.access) {
+      localStorage.setItem("accessToken", response.data.access);
+    }
+    return response.data.access;
+  } catch (error) {
+    console.error("Token refresh failed:", error);
+    throw error;
+  }
+};
+
 const authService = {
   login,
   logout,
   getCurrentUser,
   fetchUserInfo,
+  refreshToken,
 };
 
 export default authService;
