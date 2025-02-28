@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowLeftStartOnRectangleIcon,
   DocumentIcon,
@@ -12,19 +12,39 @@ import {
   ViewfinderCircleIcon,
   CalendarIcon,
 } from "@heroicons/react/24/outline";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../store/authSlice";
+import { useState } from "react";
+import Modal from "./modals/Modal"
 
 function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path;
 
-  const isDropdownActive = (paths) => paths.some((path) => location.pathname.startsWith(path));
+  const isDropdownActive = (paths) =>
+    paths.some((path) => location.pathname.startsWith(path));
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
+  const openLogoutModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div>
-      <div className="h-screen w-64 pb-10 ">
+      <div className="h-screen w-64 pb-10 select-none">
         <div className="flex h-full flex-grow flex-col overflow-y-auto no-scrollbar bg-white pt-5">
           <div className="flex mt-3 flex-1 flex-col">
             <div className="">
@@ -69,7 +89,10 @@ function Sidebar() {
                   My Info
                 </Link>
 
-                <button className="flex cursor-pointer items-center border-l-blue-600 py-2 px-4 text-sm font-medium text-gray-600 outline-none transition-all duration-100 ease-in-out hover:border-l-4 hover:border-l-blue-600 hover:text-blue-600 ">
+                <button
+                  onClick={openLogoutModal}
+                  className="flex cursor-pointer items-center border-l-blue-600 py-2 px-4 text-sm font-medium text-gray-600 outline-none transition-all duration-100 ease-in-out hover:border-l-4 hover:border-l-blue-600 hover:text-blue-600 "
+                >
                   <ArrowLeftStartOnRectangleIcon className="mr-4 h-5 w-5 align-middle" />
                   Log Out
                 </button>
@@ -87,7 +110,10 @@ function Sidebar() {
                         className="peer hidden"
                         type="checkbox"
                         id="menu-1"
-                        defaultChecked={isDropdownActive(["/view-events", "/create-event"])}
+                        defaultChecked={isDropdownActive([
+                          "/view-events",
+                          "/create-event",
+                        ])}
                       />
                       <button className="flex peer relative w-full items-center border-l-blue-600 py-3 px-4 text-sm font-medium text-gray-600 outline-none transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ">
                         <CalendarIcon className="mr-4 h-5 w-5 align-middle" />
@@ -131,7 +157,10 @@ function Sidebar() {
                         className="peer hidden"
                         type="checkbox"
                         id="menu-2"
-                        defaultChecked={isDropdownActive(["/view-tasks", "/create-tasks"])}
+                        defaultChecked={isDropdownActive([
+                          "/view-tasks",
+                          "/create-tasks",
+                        ])}
                       />
                       <button className="flex peer relative w-full items-center border-l-blue-600 py-3 px-4 text-sm font-medium text-gray-600 outline-none transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ">
                         <DocumentIcon className="mr-4 h-5 w-5 align-middle" />
@@ -175,7 +204,10 @@ function Sidebar() {
                         className="peer hidden"
                         type="checkbox"
                         id="menu-3"
-                        defaultChecked={isDropdownActive(["/view-users", "/create-user"])}
+                        defaultChecked={isDropdownActive([
+                          "/view-users",
+                          "/create-user",
+                        ])}
                       />
                       <button className="flex peer relative w-full items-center border-l-blue-600 py-3 px-4 text-sm font-medium text-gray-600 outline-none transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ">
                         <UserGroupIcon className="mr-4 h-5 w-5 align-middle" />
@@ -221,6 +253,15 @@ function Sidebar() {
           </div>
         </div>
       </div>
+     <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        type="logout"
+        title="Logout"
+        message="Are you sure you want to logout?"
+        icon={ArrowLeftStartOnRectangleIcon}
+        onConfirm={handleLogout}
+      />
     </div>
   );
 }
