@@ -27,7 +27,6 @@ const logout = () => {
 
 const getCurrentUser = () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log("getCurrentUser user:", user);
   return user;
 };
 
