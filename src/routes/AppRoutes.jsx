@@ -3,7 +3,8 @@ import { useSelector } from "react-redux";
 import LoginPage from "../pages/LoginPage";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
-import RoleBasedRoute from "./RoleBasedRoute"; 
+import RoleBasedRoute from "./RoleBasedRoute";
+import WrapperLayout from "../layout/WrapperLayout";
 
 const AppRoutes = () => {
   const { user } = useSelector((state) => state.auth);
@@ -21,16 +22,15 @@ const AppRoutes = () => {
         />
       </Route>
       <Route element={<ProtectedRoute />}>
-        <Route
-          path="/dashboard"
-          element={<div>Dashboard Component Here</div>}
-        />
-        <Route path="/tasks" element={<div>Tasks Component Here</div>} />
-        <Route element={<RoleBasedRoute isAdminRequired={true} />}>
-          <Route
-            path="/view-all-events"
-            element={<div>View all events Component Here</div>}
-          />
+        <Route element={<WrapperLayout />}>
+          <Route path="/dashboard" element={<>This is the dashboard page</>} />
+          <Route path="/tasks" element={<div>Tasks Component Here</div>} />
+          <Route element={<RoleBasedRoute isAdminRequired={true} />}>
+            <Route
+              path="/view-all-events"
+              element={<div>View all events Component Here</div>}
+            />
+          </Route>
         </Route>
       </Route>
     </Routes>
