@@ -1,7 +1,7 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login, reset } from "../store/authSlice";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom"; 
 import { useState, useEffect } from "react";
 
 function LoginPage() {

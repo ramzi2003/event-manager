@@ -88,7 +88,6 @@ export const authSlice = createSlice({
       .addCase(fetchUserInfo.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = { ...state.user, ...action.payload };
-        console.log("User info updated in Redux:", state.user);
       })
       .addCase(fetchUserInfo.rejected, (state, action) => {
         state.isLoading = false;
