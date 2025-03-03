@@ -44,7 +44,7 @@ function Sidebar() {
 
   return (
     <div>
-      <div className="h-screen w-64 pb-10 select-none">
+      <div className="h-screen w-64 select-none">
         <div className="flex h-full flex-grow flex-col overflow-y-auto no-scrollbar bg-white pt-5">
           <div className="flex mt-3 flex-1 flex-col">
             <div className="">
@@ -86,7 +86,7 @@ function Sidebar() {
                   } `}
                 >
                   <InformationCircleIcon className="mr-4 h-5 w-5 align-middle" />
-                  My Info
+                  My Profile
                 </Link>
 
                 <button

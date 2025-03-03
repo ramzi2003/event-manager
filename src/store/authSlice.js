@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "../services/authService";
 
 const initialState = {
-  user: authService.getCurrentUser(), // Use authService.getCurrentUser()
+  user: authService.getCurrentUser(), 
   isError: false,
   isSuccess: false,
   isLoading: false,
