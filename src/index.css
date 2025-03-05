@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @layer utilities {
     .clip-trapezoid {
       clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 70%);
@@ -14,3 +17,4 @@
     -ms-overflow-style: none; 
     scrollbar-width: none; 
 }
+

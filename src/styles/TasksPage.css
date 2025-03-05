@@ -1,0 +1,27 @@
+.modal-overlay {
+  pointer-events: auto;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  transition: background 0.3s ease-in-out;
+}
+
+.modal-content {
+  position: relative;
+  width: 50%;
+  height: 66%;
+  background: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  transform: scale(0.95);
+}
+
+.modal-overlay .modal-content {
+  transform: scale(1);
+}

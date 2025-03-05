@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 
 const WrapperLayout = () => {
   return (
-    <div className="flex bg-gray-200">
+    <div className="flex h-[100vh] bg-gray-200">
       <Sidebar />
       <div className="w-full">
         <div className="bg-blue-500 h-50 w-50-full clip-trapezoid"></div>

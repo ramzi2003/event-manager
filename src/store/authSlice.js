@@ -1,8 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "../services/authService";
+import dataService from "../services/dataService";
+import { setTaskCount } from "./taskSlice";
 
 const initialState = {
-  user: authService.getCurrentUser(), 
+  user: authService.getCurrentUser(),
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -16,6 +18,18 @@ export const login = createAsyncThunk(
       const response = await authService.login(credentials);
       const accessToken = response.access;
       const userInfo = await authService.fetchUserInfo(accessToken);
+
+      // Fetch tasks and count the relevant ones
+      const tasksData = await dataService.fetchTasks();
+      const countTasks = tasksData.filter(
+        (task) =>
+          (task.status === "not_started" || task.status === "in_progress") &&
+          task.responsible_department === userInfo.department.id
+      ).length;
+
+      // Dispatch the task count
+      thunkAPI.dispatch(setTaskCount(countTasks));
+
       return { ...response, ...userInfo };
     } catch (error) {
       const message =

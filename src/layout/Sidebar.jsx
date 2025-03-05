@@ -15,7 +15,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/authSlice";
 import { useState } from "react";
-import Modal from "./modals/Modal"
+import Modal from "./modals/Modal";
 
 function Sidebar() {
   const location = useLocation();
@@ -23,6 +23,7 @@ function Sidebar() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const taskCount = useSelector((state) => state.tasks.taskCount);
 
   const isActive = (path) => location.pathname === path;
 
@@ -72,9 +73,14 @@ function Sidebar() {
                 >
                   <RectangleStackIcon className="mr-4 h-5 w-5 align-middle" />
                   Tasks
-                  <span className="ml-auto rounded-full bg-blue-600 px-2 text-xs text-white">
-                    6
-                  </span>
+                  {taskCount > 0 && (
+                    <div className="relative ml-auto flex justify-center items-center">
+                      <span className="absolute inline-flex h-4 w-4 rounded-full bg-blue-600 opacity-75 animate-ping"></span>
+                      <span className="relative inline-flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-xs text-white">
+                        {taskCount}
+                      </span>
+                    </div>
+                  )}
                 </Link>
 
                 <Link
@@ -253,7 +259,7 @@ function Sidebar() {
           </div>
         </div>
       </div>
-     <Modal
+      <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
         type="logout"
