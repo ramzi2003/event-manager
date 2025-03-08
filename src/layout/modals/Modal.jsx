@@ -1,6 +1,15 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-function Modal({ isOpen, onClose, title, message, icon: Icon, onConfirm }) {
+function Modal({
+  isOpen,
+  onClose,
+  title,
+  message,
+  color,
+  bgColor,
+  icon: Icon,
+  onConfirm,
+}) {
   if (!isOpen) return null;
 
   const handleOutsideClick = (e) => {
@@ -20,7 +29,7 @@ function Modal({ isOpen, onClose, title, message, icon: Icon, onConfirm }) {
       >
         {/* Header */}
         <div className="flex items-center space-x-3">
-          {Icon && <Icon className="h-7 w-7 text-blue-600" />}
+          {Icon && <Icon className={`h-7 w-7 ${color}`} />}
           <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
         </div>
 
@@ -37,7 +46,7 @@ function Modal({ isOpen, onClose, title, message, icon: Icon, onConfirm }) {
           </button>
           <button
             onClick={onConfirm}
-            className="rounded-md bg-blue-600 py-2 px-5 text-sm font-medium text-white transition-all shadow-md hover:bg-blue-700 hover:shadow-lg focus:ring focus:ring-blue-300 active:bg-blue-800 cursor-pointer"
+            className={`${bgColor} rounded-md bg-blue-600 py-2 px-5 text-sm font-medium text-white transition-all shadow-md  hover:shadow-lg focus:ring cursor-pointer`}
           >
             Confirm
           </button>
@@ -54,6 +63,8 @@ Modal.propTypes = {
   message: PropTypes.string.isRequired,
   icon: PropTypes.elementType,
   onConfirm: PropTypes.func.isRequired,
+  color: PropTypes.string.isRequired,
+  bgColor: PropTypes.string.isRequired,
 };
 
 export default Modal;

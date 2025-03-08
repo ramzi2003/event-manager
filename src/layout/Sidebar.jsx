@@ -267,6 +267,8 @@ function Sidebar() {
         message="Are you sure you want to logout?"
         icon={ArrowLeftStartOnRectangleIcon}
         onConfirm={handleLogout}
+        color="text-blue-500"
+        bgColor="bg-blue-400 hover:bg-blue-500"
       />
     </div>
   );

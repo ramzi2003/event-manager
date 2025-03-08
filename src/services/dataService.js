@@ -78,11 +78,48 @@ const updateTaskStatus = async (taskId, status) => {
   }
 };
 
+const deleteEvent = async (eventId) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      throw new Error('No access token found');
+    }
+    await axios.delete(`${API_URL}api/events/${eventId}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    throw error;
+  }
+};
+
+const fetchVenues = async () => {
+  try {
+    const token = localStorage.getItem('accessToken'); 
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    const response = await axios.get(`${API_URL}api/venues/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching venues:', error);
+    throw error;
+  }
+};
+
 const dataService = {
   fetchDepartments,
   fetchEvents,
   fetchTasks,
   updateTaskStatus,
+  deleteEvent,
+  fetchVenues
 };
 
 export default dataService;
