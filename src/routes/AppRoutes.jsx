@@ -7,6 +7,7 @@ import RoleBasedRoute from "./RoleBasedRoute";
 import WrapperLayout from "../layout/WrapperLayout";
 import MyProfilePage from "../pages/MyProfilePage";
 import TasksPage from "../pages/TasksPage";
+import DashboardPage from "../pages/DashboardPage";
 
 const AppRoutes = () => {
   const { user } = useSelector((state) => state.auth);
@@ -25,7 +26,7 @@ const AppRoutes = () => {
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route element={<WrapperLayout />}>
-          <Route path="/dashboard" element={<>This is the dashboard page</>} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/my-profile" element={<MyProfilePage />} />
           <Route element={<RoleBasedRoute isAdminRequired={true} />}>
