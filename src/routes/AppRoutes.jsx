@@ -11,6 +11,7 @@ import TasksPage from "../pages/TasksPage";
 import DashboardPage from "../pages/DashboardPage";
 import dataService from "../services/dataService";
 import { setTaskCount } from "../store/taskSlice";
+import ViewEvents from "../pages/admin/events/ViewEvents";
 
 const AppRoutes = () => {
   const { user } = useSelector((state) => state.auth);
@@ -56,8 +57,8 @@ const AppRoutes = () => {
           <Route path="/my-profile" element={<MyProfilePage />} />
           <Route element={<RoleBasedRoute isAdminRequired={true} />}>
             <Route
-              path="/view-all-events"
-              element={<div>View all events Component Here</div>}
+              path="/view-events"
+              element={<ViewEvents />}
             />
           </Route>
         </Route>

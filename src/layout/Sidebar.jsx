@@ -14,7 +14,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/authSlice";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "./modals/Modal";
 
 function Sidebar() {
@@ -24,6 +24,10 @@ function Sidebar() {
   const { user } = useSelector((state) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const taskCount = useSelector((state) => state.tasks.taskCount);
+
+  const [isEventsOpen, setIsEventsOpen] = useState(false);
+  const [isTasksOpen, setIsTasksOpen] = useState(false);
+  const [isUsersOpen, setIsUsersOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path;
 
@@ -42,6 +46,12 @@ function Sidebar() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    setIsEventsOpen(isDropdownActive(["/view-events", "/create-event"]));
+    setIsTasksOpen(isDropdownActive(["/view-tasks", "/create-tasks"]));
+    setIsUsersOpen(isDropdownActive(["/view-users", "/create-user"]));
+  }, [location]);
 
   return (
     <div>
@@ -116,10 +126,8 @@ function Sidebar() {
                         className="peer hidden"
                         type="checkbox"
                         id="menu-1"
-                        defaultChecked={isDropdownActive([
-                          "/view-events",
-                          "/create-event",
-                        ])}
+                        checked={isEventsOpen}
+                        onChange={() => setIsEventsOpen(!isEventsOpen)}
                       />
                       <button className="flex peer relative w-full items-center border-l-blue-600 py-3 px-4 text-sm font-medium text-gray-600 outline-none transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ">
                         <CalendarIcon className="mr-4 h-5 w-5 align-middle" />
@@ -145,7 +153,13 @@ function Sidebar() {
                       </svg>
                       <ul className="duration-400 flex max-h-0 flex-col overflow-hidden rounded-xl bg-gray-100 font-medium transition-all duration-300 peer-checked:max-h-96">
                         <Link to="/view-events">
-                          <li className="flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm text-gray-600 transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600">
+                          <li
+                            className={`flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm text-gray-600 transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ${
+                              isActive("/view-events")
+                                ? "border-l-4 border-l-blue-600 text-blue-600"
+                                : "text-gray-600"
+                            }`}
+                          >
                             <ViewfinderCircleIcon className="mr-4 h-5 w-5 align-middle" />
                             View Events
                           </li>
@@ -163,10 +177,8 @@ function Sidebar() {
                         className="peer hidden"
                         type="checkbox"
                         id="menu-2"
-                        defaultChecked={isDropdownActive([
-                          "/view-tasks",
-                          "/create-tasks",
-                        ])}
+                        checked={isTasksOpen}
+                        onChange={() => setIsTasksOpen(!isTasksOpen)}
                       />
                       <button className="flex peer relative w-full items-center border-l-blue-600 py-3 px-4 text-sm font-medium text-gray-600 outline-none transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ">
                         <DocumentIcon className="mr-4 h-5 w-5 align-middle" />
@@ -210,10 +222,8 @@ function Sidebar() {
                         className="peer hidden"
                         type="checkbox"
                         id="menu-3"
-                        defaultChecked={isDropdownActive([
-                          "/view-users",
-                          "/create-user",
-                        ])}
+                        checked={isUsersOpen}
+                        onChange={() => setIsUsersOpen(!isUsersOpen)}
                       />
                       <button className="flex peer relative w-full items-center border-l-blue-600 py-3 px-4 text-sm font-medium text-gray-600 outline-none transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ">
                         <UserGroupIcon className="mr-4 h-5 w-5 align-middle" />

@@ -17,7 +17,7 @@ function DashboardPage() {
       const eventsData = await dataService.fetchEvents();
       const currentDate = new Date();
       const filteredAndSortedEvents = eventsData
-        .filter(event => new Date(event.end_date) >= currentDate)
+        .filter((event) => new Date(event.end_date) >= currentDate)
         .sort((a, b) => new Date(a.end_date) - new Date(b.end_date));
       setEvents(filteredAndSortedEvents);
     } catch (error) {
@@ -35,7 +35,7 @@ function DashboardPage() {
       const filteredTasks = tasksData.filter((task) => task.event === eventId);
       setTasks(filteredTasks);
     } catch (error) {
-      console.log("Error fetching tasks:", error)
+      console.log("Error fetching tasks:", error);
     }
   };
 
@@ -65,7 +65,7 @@ function DashboardPage() {
 
   const handleOpenDrawer = (event) => {
     setSelectedEvent(event);
-    fetchTasks(event.id)
+    fetchTasks(event.id);
     setTimeout(() => {
       setIsOpen(true);
     }, 100);
@@ -92,7 +92,7 @@ function DashboardPage() {
                     <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"></path>
                   </svg>
                 </span>
-                <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+                <time className="block mb-2 text-sm font-normal leading-none text-gray-400">
                   {new Date(event.end_date).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
