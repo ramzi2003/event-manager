@@ -113,13 +113,32 @@ const fetchVenues = async () => {
   }
 };
 
+const createEvent = async (eventData) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      throw new Error('No access token found');
+    }
+    const response = await axios.post(`${API_URL}api/events/`, eventData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating event:', error);
+    throw error;
+  }
+};
+
 const dataService = {
   fetchDepartments,
   fetchEvents,
   fetchTasks,
   updateTaskStatus,
   deleteEvent,
-  fetchVenues
+  fetchVenues,
+  createEvent
 };
 
 export default dataService;
