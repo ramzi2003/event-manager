@@ -5,6 +5,9 @@ import { IoEllipsisHorizontalSharp } from "react-icons/io5";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import dataService from "../../../services/dataService";
+import Notification from "../../../layout/modals/Notification";
+import Modal from "../../../layout/modals/Modal";
+import { CheckIcon } from "@heroicons/react/24/outline";
 
 const ViewEvents = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date());
@@ -16,6 +19,9 @@ const ViewEvents = () => {
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const [events, setEvents] = useState([]);
   const [venues, setVenues] = useState([]);
+  const [notification, setNotification] = useState({ show: false, text: "", icon: null });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
   const accordionContent = useRef(null);
 
   useEffect(() => {
@@ -90,6 +96,27 @@ const ViewEvents = () => {
     return venue ? venue.name : "Unknown Venue";
   };
 
+  const handleDeleteEvent = async () => {
+    try {
+      await dataService.deleteEvent(eventToDelete);
+      setEvents(events.filter(event => event.id !== eventToDelete));
+      setNotification({ show: true, text: "Event deleted successfully", icon: <CheckIcon /> });
+      setTimeout(() => {
+        setNotification({ show: false, text: "", icon: null });
+      }, 2000);
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    } finally {
+      setIsModalOpen(false);
+      setEventToDelete(null);
+    }
+  };
+
+  const openDeleteModal = (eventId) => {
+    setEventToDelete(eventId);
+    setIsModalOpen(true);
+  };
+
   const filteredEvents = events
   .filter((event) => {
     const eventEndDate = new Date(event.end_date);
@@ -107,6 +134,17 @@ const ViewEvents = () => {
 
   return (
     <>
+      {notification.show && <Notification text={notification.text} icon={notification.icon} />}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Delete Event"
+        message="Are you sure you want to delete this event?"
+        color="text-red-500"
+        bgColor="bg-red-500"
+        icon={RiDeleteBin6Fill}
+        onConfirm={handleDeleteEvent}
+      />
       <div className="pb-3">
         <div className="relative">
           <div className="absolute flex items-center ml-2 h-full">
@@ -142,7 +180,7 @@ const ViewEvents = () => {
             ].map((filter, index) => (
               <div key={index} className="relative">
                 <select
-                  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  className=" cursor-pointer block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   onChange={
                     filter.label === "Importance"
                       ? handleImportanceChange
@@ -184,7 +222,7 @@ const ViewEvents = () => {
                 dateFormat="MM/yyyy"
                 showMonthYearPicker
                 isClearable
-                className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                className="cursor-pointer block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               />
             </div>
           </div>
@@ -266,6 +304,7 @@ const ViewEvents = () => {
                                   data-modal-target="deleteModal"
                                   data-modal-toggle="deleteModal"
                                   className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-red-500 cursor-pointer"
+                                  onClick={() => openDeleteModal(event.id)} // Open delete modal
                                 >
                                   <RiDeleteBin6Fill className="w-4 h-4 mr-2" />
                                   Delete

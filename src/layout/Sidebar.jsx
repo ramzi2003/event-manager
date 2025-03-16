@@ -165,7 +165,11 @@ function Sidebar() {
                           </li>
                         </Link>
                         <Link to="/create-event">
-                          <li className="flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm text-gray-600 transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600">
+                          <li  className={`flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm text-gray-600 transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ${
+                              isActive("/create-event")
+                                ? "border-l-4 border-l-blue-600 text-blue-600"
+                                : "text-gray-600"
+                            }`}>
                             <FolderPlusIcon className="mr-4 h-5 w-5 align-middle" />
                             Create Event
                           </li>
