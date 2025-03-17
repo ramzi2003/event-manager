@@ -1,12 +1,12 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'http://10.121.4.116:8000/';
+const API_URL = "http://10.121.4.116:8000/";
 
 const fetchDepartments = async () => {
   try {
-    const token = localStorage.getItem('accessToken'); 
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error("No authentication token found");
     }
     const response = await axios.get(`${API_URL}api/departments/`, {
       headers: {
@@ -15,16 +15,16 @@ const fetchDepartments = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching departments:', error);
+    console.error("Error fetching departments:", error);
     throw error;
   }
 };
 
 const fetchEvents = async () => {
   try {
-    const token = localStorage.getItem('accessToken'); 
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error("No authentication token found");
     }
     const response = await axios.get(`${API_URL}api/events/`, {
       headers: {
@@ -33,16 +33,16 @@ const fetchEvents = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching events:', error);
+    console.error("Error fetching events:", error);
     throw error;
   }
 };
 
 const fetchEventById = async (eventId) => {
   try {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      throw new Error('No access token found');
+      throw new Error("No access token found");
     }
     const response = await axios.get(`${API_URL}api/events/${eventId}/`, {
       headers: {
@@ -51,16 +51,34 @@ const fetchEventById = async (eventId) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching event by ID:', error);
+    console.error("Error fetching event by ID:", error);
+    throw error;
+  }
+};
+
+const fetchTaskById = async (taskId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+    const response = await axios.get(`${API_URL}api/tasks/${taskId}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching task by ID:", error);
     throw error;
   }
 };
 
 const fetchTasks = async () => {
   try {
-    const token = localStorage.getItem('accessToken'); 
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error("No authentication token found");
     }
     const response = await axios.get(`${API_URL}api/tasks/`, {
       headers: {
@@ -69,16 +87,16 @@ const fetchTasks = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching tasks:', error);
+    console.error("Error fetching tasks:", error);
     throw error;
   }
 };
 
 const updateTaskStatus = async (taskId, status) => {
   try {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      throw new Error('No access token found');
+      throw new Error("No access token found");
     }
     const response = await axios.patch(
       `${API_URL}api/tasks/${taskId}/`,
@@ -91,16 +109,16 @@ const updateTaskStatus = async (taskId, status) => {
     );
     return response.data;
   } catch (error) {
-    console.error('Error updating task status:', error);
+    console.error("Error updating task status:", error);
     throw error;
   }
 };
 
 const deleteEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      throw new Error('No access token found');
+      throw new Error("No access token found");
     }
     await axios.delete(`${API_URL}api/events/${eventId}/`, {
       headers: {
@@ -108,16 +126,16 @@ const deleteEvent = async (eventId) => {
       },
     });
   } catch (error) {
-    console.error('Error deleting event:', error);
+    console.error("Error deleting event:", error);
     throw error;
   }
 };
 
 const deleteTask = async (taskId) => {
   try {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      throw new Error('No access token found');
+      throw new Error("No access token found");
     }
     await axios.delete(`${API_URL}api/tasks/${taskId}/`, {
       headers: {
@@ -125,16 +143,16 @@ const deleteTask = async (taskId) => {
       },
     });
   } catch (error) {
-    console.error('Error deleting event:', error);
+    console.error("Error deleting event:", error);
     throw error;
   }
 };
 
 const fetchVenues = async () => {
   try {
-    const token = localStorage.getItem('accessToken'); 
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error("No authentication token found");
     }
     const response = await axios.get(`${API_URL}api/venues/`, {
       headers: {
@@ -143,16 +161,16 @@ const fetchVenues = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching venues:', error);
+    console.error("Error fetching venues:", error);
     throw error;
   }
 };
 
 const createEvent = async (eventData) => {
   try {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      throw new Error('No access token found');
+      throw new Error("No access token found");
     }
     const response = await axios.post(`${API_URL}api/events/`, eventData, {
       headers: {
@@ -161,25 +179,69 @@ const createEvent = async (eventData) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error creating event:', error);
+    console.error("Error creating event:", error);
     throw error;
   }
 };
 
-const updateEvent = async (eventId, eventData) => {
+const createTask = async (taskData) => {
   try {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      throw new Error('No access token found');
+      throw new Error("No access token found");
     }
-    const response = await axios.put(`${API_URL}api/events/${eventId}/`, eventData, {
+    const response = await axios.post(`${API_URL}api/tasks/`, taskData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
   } catch (error) {
-    console.error('Error updating event:', error);
+    console.error("Error creating task:", error);
+    throw error;
+  }
+};
+
+const updateEvent = async (eventId, eventData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+    const response = await axios.put(
+      `${API_URL}api/events/${eventId}/`,
+      eventData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating event:", error);
+    throw error;
+  }
+};
+
+const updateTask = async (taskId, taskData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+    const response = await axios.put(
+      `${API_URL}api/tasks/${taskId}/`,
+      taskData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating task:", error);
     throw error;
   }
 };
@@ -194,7 +256,10 @@ const dataService = {
   fetchVenues,
   createEvent,
   updateEvent,
-  deleteTask
+  deleteTask,
+  createTask,
+  fetchTaskById,
+  updateTask,
 };
 
 export default dataService;

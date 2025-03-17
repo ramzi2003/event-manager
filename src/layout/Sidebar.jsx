@@ -49,7 +49,7 @@ function Sidebar() {
 
   useEffect(() => {
     setIsEventsOpen(isDropdownActive(["/view-events", "/create-event"]));
-    setIsTasksOpen(isDropdownActive(["/view-tasks", "/create-tasks"]));
+    setIsTasksOpen(isDropdownActive(["/view-tasks", "/create-task"]));
     setIsUsersOpen(isDropdownActive(["/view-users", "/create-user"]));
   }, [location]);
 
@@ -154,7 +154,7 @@ function Sidebar() {
                       <ul className="duration-400 flex max-h-0 flex-col overflow-hidden rounded-xl bg-gray-100 font-medium transition-all duration-300 peer-checked:max-h-96">
                         <Link to="/view-events">
                           <li
-                            className={`flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm text-gray-600 transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ${
+                            className={`flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ${
                               isActive("/view-events")
                                 ? "border-l-4 border-l-blue-600 text-blue-600"
                                 : "text-gray-600"
@@ -165,7 +165,7 @@ function Sidebar() {
                           </li>
                         </Link>
                         <Link to="/create-event">
-                          <li  className={`flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm text-gray-600 transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ${
+                          <li  className={`flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ${
                               isActive("/create-event")
                                 ? "border-l-4 border-l-blue-600 text-blue-600"
                                 : "text-gray-600"
@@ -208,13 +208,21 @@ function Sidebar() {
                       </svg>
                       <ul className="duration-400 flex max-h-0 flex-col overflow-hidden rounded-xl bg-gray-100 font-medium transition-all duration-300 peer-checked:max-h-96">
                         <Link to="/view-tasks">
-                          <li className="flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm text-gray-600 transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600">
+                        <li  className={`flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ${
+                              isActive("/view-tasks")
+                                ? "border-l-4 border-l-blue-600 text-blue-600"
+                                : "text-gray-600"
+                            }`}>
                             <ViewfinderCircleIcon className="mr-4 h-5 w-5 align-middle" />
                             View Tasks
                           </li>
                         </Link>
-                        <Link to="/create-tasks">
-                          <li className="flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm text-gray-600 transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600">
+                        <Link to="/create-task">
+                        <li  className={`flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ${
+                              isActive("/create-task")
+                                ? "border-l-4 border-l-blue-600 text-blue-600"
+                                : "text-gray-600"
+                            }`}>
                             <DocumentPlusIcon className="mr-4 h-5 w-5 align-middle" />
                             Create Task
                           </li>

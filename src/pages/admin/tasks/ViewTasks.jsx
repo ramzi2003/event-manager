@@ -396,7 +396,7 @@ const ViewTasks = () => {
                                         className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-blue-500  cursor-pointer"
                                         onClick={() =>
                                           navigate(
-                                            `/edit-selectedTask/${selectedTask.id}`
+                                            `/edit-task/${selectedTask.id}`
                                           )
                                         }
                                       >
