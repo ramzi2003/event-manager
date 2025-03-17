@@ -8,6 +8,7 @@ import dataService from "../../../services/dataService";
 import Notification from "../../../layout/modals/Notification";
 import Modal from "../../../layout/modals/Modal";
 import { CheckIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
 
 const ViewEvents = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date());
@@ -23,6 +24,7 @@ const ViewEvents = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
   const accordionContent = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -291,7 +293,8 @@ const ViewEvents = () => {
                                   type="button"
                                   data-modal-target="updateProductModal"
                                   data-modal-toggle="updateProductModal"
-                                  className="flex w-full items-center py-2 px-4 hover:bg-gray-100 cursor-pointer"
+                                  className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-blue-500  cursor-pointer"
+                                  onClick={() => navigate(`/edit-event/${event.id}`)}
                                 >
                                   <FaEdit className="w-4 h-4 mr-2" />
                                   Edit

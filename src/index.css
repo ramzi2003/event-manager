@@ -18,3 +18,7 @@
     scrollbar-width: none; 
 }
 
+.non-interactive {
+  pointer-events: none;
+  opacity: 0.5; 
+}

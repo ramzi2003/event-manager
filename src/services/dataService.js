@@ -38,6 +38,24 @@ const fetchEvents = async () => {
   }
 };
 
+const fetchEventById = async (eventId) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      throw new Error('No access token found');
+    }
+    const response = await axios.get(`${API_URL}api/events/${eventId}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching event by ID:', error);
+    throw error;
+  }
+};
+
 const fetchTasks = async () => {
   try {
     const token = localStorage.getItem('accessToken'); 
@@ -131,14 +149,34 @@ const createEvent = async (eventData) => {
   }
 };
 
+const updateEvent = async (eventId, eventData) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      throw new Error('No access token found');
+    }
+    const response = await axios.put(`${API_URL}api/events/${eventId}/`, eventData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating event:', error);
+    throw error;
+  }
+};
+
 const dataService = {
   fetchDepartments,
   fetchEvents,
+  fetchEventById,
   fetchTasks,
   updateTaskStatus,
   deleteEvent,
   fetchVenues,
-  createEvent
+  createEvent,
+  updateEvent,
 };
 
 export default dataService;

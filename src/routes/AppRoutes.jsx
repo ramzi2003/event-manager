@@ -13,6 +13,7 @@ import dataService from "../services/dataService";
 import { setTaskCount } from "../store/taskSlice";
 import ViewEvents from "../pages/admin/events/ViewEvents";
 import CreateEvent from "../pages/admin/events/CreateEvent";
+import EditEvent from "../pages/admin/events/EditEvent";
 
 const AppRoutes = () => {
   const { user } = useSelector((state) => state.auth);
@@ -64,6 +65,10 @@ const AppRoutes = () => {
             <Route 
               path="/create-event"
               element={<CreateEvent />}
+            />
+             <Route 
+              path="/edit-event/:eventId"
+              element={<EditEvent />}
             />
           </Route>
         </Route>
