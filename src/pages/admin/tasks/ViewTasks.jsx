@@ -1,18 +1,54 @@
 import { useState, useEffect } from "react";
-import dataService from "../services/dataService";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, isSameMonth } from "date-fns";
+import dataService from "../../../services/dataService";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
+import { IoEllipsisHorizontalSharp } from "react-icons/io5";
+import { FaEdit } from "react-icons/fa";
+import { RiDeleteBin6Fill } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
+import Notification from "../../../layout/modals/Notification";
+import Modal from "../../../layout/modals/Modal";
+import { CheckIcon } from "@heroicons/react/24/outline";
 
 const ViewTasks = () => {
   const [departments, setDepartments] = useState([]);
   const [events, setEvents] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [tasks, setTasks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedDepartment, setSelectedDepartment] = useState("all");
   const [selectedEvent, setSelectedEvent] = useState("all");
+  const [notification, setNotification] = useState({
+    show: false,
+    text: "",
+    icon: null,
+  });
+  const [open, setOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [taskToDelete, setTaskToDelete] = useState(null);
+  const navigate = useNavigate();
+
+  const handleOpen = (task) => {
+    setSelectedTask(task);
+    setOpen(true);
+  };
+
+  const formatStatus = (status) => {
+    return status
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,6 +61,7 @@ const ViewTasks = () => {
 
         const tasksData = await dataService.fetchTasks();
         setTasks(tasksData);
+        console.log(tasksData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -51,6 +88,28 @@ const ViewTasks = () => {
 
   const handleEventChange = (event) => {
     setSelectedEvent(event.target.value);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        openDropdownId &&
+        !event.target.closest(`#dropdown-${openDropdownId}`)
+      ) {
+        setOpenDropdownId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openDropdownId]);
+
+  // Modify the toggleDropdown function
+  const toggleDropdown = (event, taskId) => {
+    event.stopPropagation();
+    setOpenDropdownId(openDropdownId === taskId ? null : taskId);
   };
 
   const getStatusStyles = (status) => {
@@ -87,6 +146,32 @@ const ViewTasks = () => {
     return isSameMonth(new Date(task.due_date), selectedMonth);
   };
 
+  const handleDeleteTask = async () => {
+    try {
+      await dataService.deleteTask(taskToDelete);
+      setTasks(tasks.filter((task) => task.id !== taskToDelete));
+      setNotification({
+        show: true,
+        text: "Task deleted successfully",
+        icon: <CheckIcon />,
+      });
+      setTimeout(() => {
+        setNotification({ show: false, text: "", icon: null });
+      }, 2000);
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    } finally {
+      setIsModalOpen(false);
+      setOpen(false);
+      setTaskToDelete(null);
+    }
+  };
+
+  const openDeleteModal = (taskId) => {
+    setTaskToDelete(taskId);
+    setIsModalOpen(true);
+  };
+
   const filteredTasks = tasks.filter((task) => {
     const matchesSearchQuery = task.title
       .toLowerCase()
@@ -110,6 +195,19 @@ const ViewTasks = () => {
 
   return (
     <>
+      {notification.show && (
+        <Notification text={notification.text} icon={notification.icon} />
+      )}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Delete Task"
+        message="Are you sure you want to delete this task?"
+        color="text-red-500"
+        bgColor="bg-red-500"
+        icon={RiDeleteBin6Fill}
+        onConfirm={handleDeleteTask}
+      />
       <div className=" border-b pb-3 border-gray-300">
         <div className="relative ">
           <div className="absolute flex items-center ml-2 h-full">
@@ -163,9 +261,11 @@ const ViewTasks = () => {
                       key={i}
                       value={
                         filter.label === "Responsible Department"
-                          ? departments.find((dept) => dept.name === option)?.id || "all"
+                          ? departments.find((dept) => dept.name === option)
+                              ?.id || "all"
                           : filter.label === "Event"
-                          ? events.find((event) => event.name === option)?.id || "all"
+                          ? events.find((event) => event.name === option)?.id ||
+                            "all"
                           : option.toLowerCase().replace(/\s/g, "_")
                       }
                     >
@@ -188,7 +288,7 @@ const ViewTasks = () => {
                 dateFormat="MM/yyyy"
                 showMonthYearPicker
                 isClearable
-                className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                className="cursor-pointer block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               />
             </div>
           </div>
@@ -201,6 +301,7 @@ const ViewTasks = () => {
             return (
               <li
                 key={task.id}
+                onClick={() => handleOpen(task)}
                 className="flex justify-between gap-x-6 py-5 select-none cursor-pointer hover:bg-gray-100 px-2"
               >
                 <div className="flex min-w-0 gap-x-4">
@@ -237,6 +338,129 @@ const ViewTasks = () => {
           })}
         </ul>
       </div>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        className="relative z-10"
+      >
+        <DialogBackdrop
+          transition
+          className="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+        />
+
+        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <DialogPanel
+              transition
+              className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 w-1/2 data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+            >
+              {selectedTask && (
+                <>
+                  <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div className="sm:flex sm:items-start">
+                      <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                        <div className="flex justify-between items-top">
+                          <DialogTitle
+                            as="h3"
+                            className="text-base font-semibold text-gray-900 text-xl"
+                          >
+                            {selectedTask.title}
+                            <p className="text-sm text-gray-500 flex items-center justify-center italic">
+                              {events.find(
+                                (event) => event.id === selectedTask.event
+                              )?.name || "Unknown"}
+                            </p>
+                          </DialogTitle>
+                          <div className="w-16">
+                            <div className="relative text-right">
+                              <button
+                                className="hover:bg-gray-200 p-1 rounded-md cursor-pointer align-top"
+                                onClick={(e) =>
+                                  toggleDropdown(e, selectedTask.id)
+                                }
+                              >
+                                <IoEllipsisHorizontalSharp />
+                              </button>
+                              {openDropdownId === selectedTask.id && (
+                                <div
+                                  id={`dropdown-${selectedTask.id}`}
+                                  className="absolute right-0 mt-2 w-44 bg-white rounded divide-y divide-gray-100 shadow z-10"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <ul className="py-1 text-sm text-gray-700">
+                                    <li>
+                                      <button
+                                        type="button"
+                                        data-modal-target="updateProductModal"
+                                        data-modal-toggle="updateProductModal"
+                                        className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-blue-500  cursor-pointer"
+                                        onClick={() =>
+                                          navigate(
+                                            `/edit-selectedTask/${selectedTask.id}`
+                                          )
+                                        }
+                                      >
+                                        <FaEdit className="w-4 h-4 mr-2" />
+                                        Edit
+                                      </button>
+                                    </li>
+
+                                    <li>
+                                      <button
+                                        type="button"
+                                        data-modal-target="deleteModal"
+                                        data-modal-toggle="deleteModal"
+                                        onClick={() => {
+                                          openDeleteModal(selectedTask.id);
+                                          setOpen(false);
+                                        }}
+                                        className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-red-500 cursor-pointer"
+                                      >
+                                        <RiDeleteBin6Fill className="w-4 h-4 mr-2" />
+                                        Delete
+                                      </button>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-500">
+                            {selectedTask.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 px-4 py-3  sm:flex sm:flex-row justify-between items-center sm:px-6">
+                    <p>
+                      <p className="text-sm text-gray-500 italic">
+                        <strong>Responsible Department:</strong>{" "}
+                        {departments.find(
+                          (dept) =>
+                            dept.id === selectedTask.responsible_department
+                        )?.name || "Unknown"}
+                      </p>
+                      <p className="text-sm text-gray-500 italic">
+                        <strong>Status:</strong>{" "}
+                        {formatStatus(selectedTask.status)}
+                      </p>
+                    </p>
+                    <p className="text-xs text-gray-400 italic font-semibold">
+                      {format(
+                        new Date(selectedTask.due_date),
+                        "MMM d, yyyy HH:mm"
+                      )}
+                    </p>
+                  </div>
+                </>
+              )}
+            </DialogPanel>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 };

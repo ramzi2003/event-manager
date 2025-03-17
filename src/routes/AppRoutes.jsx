@@ -14,6 +14,7 @@ import { setTaskCount } from "../store/taskSlice";
 import ViewEvents from "../pages/admin/events/ViewEvents";
 import CreateEvent from "../pages/admin/events/CreateEvent";
 import EditEvent from "../pages/admin/events/EditEvent";
+import ViewTasks from "../pages/admin/tasks/ViewTasks";
 
 const AppRoutes = () => {
   const { user } = useSelector((state) => state.auth);
@@ -58,18 +59,10 @@ const AppRoutes = () => {
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/my-profile" element={<MyProfilePage />} />
           <Route element={<RoleBasedRoute isAdminRequired={true} />}>
-            <Route
-              path="/view-events"
-              element={<ViewEvents />}
-            />
-            <Route 
-              path="/create-event"
-              element={<CreateEvent />}
-            />
-             <Route 
-              path="/edit-event/:eventId"
-              element={<EditEvent />}
-            />
+            <Route path="/view-events" element={<ViewEvents />} />
+            <Route path="/create-event" element={<CreateEvent />} />
+            <Route path="/edit-event/:eventId" element={<EditEvent />} />
+            <Route path="/view-tasks" element={<ViewTasks />} />
           </Route>
         </Route>
       </Route>

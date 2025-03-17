@@ -113,6 +113,23 @@ const deleteEvent = async (eventId) => {
   }
 };
 
+const deleteTask = async (taskId) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      throw new Error('No access token found');
+    }
+    await axios.delete(`${API_URL}api/tasks/${taskId}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    throw error;
+  }
+};
+
 const fetchVenues = async () => {
   try {
     const token = localStorage.getItem('accessToken'); 
@@ -177,6 +194,7 @@ const dataService = {
   fetchVenues,
   createEvent,
   updateEvent,
+  deleteTask
 };
 
 export default dataService;

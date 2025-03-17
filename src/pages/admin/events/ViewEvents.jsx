@@ -20,7 +20,11 @@ const ViewEvents = () => {
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const [events, setEvents] = useState([]);
   const [venues, setVenues] = useState([]);
-  const [notification, setNotification] = useState({ show: false, text: "", icon: null });
+  const [notification, setNotification] = useState({
+    show: false,
+    text: "",
+    icon: null,
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
   const accordionContent = useRef(null);
@@ -101,8 +105,12 @@ const ViewEvents = () => {
   const handleDeleteEvent = async () => {
     try {
       await dataService.deleteEvent(eventToDelete);
-      setEvents(events.filter(event => event.id !== eventToDelete));
-      setNotification({ show: true, text: "Event deleted successfully", icon: <CheckIcon /> });
+      setEvents(events.filter((event) => event.id !== eventToDelete));
+      setNotification({
+        show: true,
+        text: "Event deleted successfully",
+        icon: <CheckIcon />,
+      });
       setTimeout(() => {
         setNotification({ show: false, text: "", icon: null });
       }, 2000);
@@ -120,23 +128,28 @@ const ViewEvents = () => {
   };
 
   const filteredEvents = events
-  .filter((event) => {
-    const eventEndDate = new Date(event.end_date);
-    return (
-      (!selectedMonth ||
-        (eventEndDate.getMonth() === selectedMonth.getMonth() &&
-          eventEndDate.getFullYear() === selectedMonth.getFullYear())) &&
-      (selectedStatus === "all" || event.payment_status === selectedStatus.replace(/_/g, " ")) &&
-      (selectedImportance === "all" || event.importance === selectedImportance) &&
-      (glCc === "" || event.gl_cc_info.includes(glCc)) &&
-      (searchName === "" || event.name.toLowerCase().includes(searchName.toLowerCase()))
-    );
-  })
-  .sort((a, b) => new Date(a.end_date) - new Date(b.end_date));
+    .filter((event) => {
+      const eventEndDate = new Date(event.end_date);
+      return (
+        (!selectedMonth ||
+          (eventEndDate.getMonth() === selectedMonth.getMonth() &&
+            eventEndDate.getFullYear() === selectedMonth.getFullYear())) &&
+        (selectedStatus === "all" ||
+          event.payment_status === selectedStatus.replace(/_/g, " ")) &&
+        (selectedImportance === "all" ||
+          event.importance === selectedImportance) &&
+        (glCc === "" || event.gl_cc_info.includes(glCc)) &&
+        (searchName === "" ||
+          event.name.toLowerCase().includes(searchName.toLowerCase()))
+      );
+    })
+    .sort((a, b) => new Date(a.end_date) - new Date(b.end_date));
 
   return (
     <>
-      {notification.show && <Notification text={notification.text} icon={notification.icon} />}
+      {notification.show && (
+        <Notification text={notification.text} icon={notification.icon} />
+      )}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -294,7 +307,9 @@ const ViewEvents = () => {
                                   data-modal-target="updateProductModal"
                                   data-modal-toggle="updateProductModal"
                                   className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-blue-500  cursor-pointer"
-                                  onClick={() => navigate(`/edit-event/${event.id}`)}
+                                  onClick={() =>
+                                    navigate(`/edit-event/${event.id}`)
+                                  }
                                 >
                                   <FaEdit className="w-4 h-4 mr-2" />
                                   Edit
