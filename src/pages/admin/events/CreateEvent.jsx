@@ -124,7 +124,7 @@ function CreateEvent() {
     <>
       {notification.show && (
         <Notification
-          text={notification.message}
+          text={notification.text}
           icon={notification.icon}
           bgColor={notification.bgColor}
           color={notification.color}

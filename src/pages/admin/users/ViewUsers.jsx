@@ -2,8 +2,13 @@ import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import dataService from "../../../services/dataService";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaExclamationCircle } from "react-icons/fa";
 import { IoEllipsisHorizontalSharp } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import { CheckIcon } from "@heroicons/react/24/outline";
+import Notification from "../../../layout/modals/Notification";
+import Modal from "../../../layout/modals/Modal";
+import { useSelector } from "react-redux";
 
 const ViewUsers = () => {
   const [departments, setDepartments] = useState([]);
@@ -15,7 +20,37 @@ const ViewUsers = () => {
   const [selectedUserType, setSelectedUserType] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notification, setNotification] = useState({
+    show: false,
+    text: "",
+    icon: null,
+  });
   const usersPerPage = 5;
+  const navigate = useNavigate();
+
+  const currentUserId = useSelector((state) => state.auth.user.id);
+
+  const handleDeleteUser = async () => {
+    try {
+        await dataService.deleteUser(userToDelete);
+        setUsers(users.filter((user) => user.id !== userToDelete));
+        setNotification({
+            show: true,
+            text: "User deleted successfully",
+            icon: <CheckIcon />,
+          });
+          setTimeout(() => {
+            setNotification({ show: false, text: "", icon: null });
+          }, 2000);
+    } catch (error) {
+        console.error("Error deleting user:", error);
+    } finally {
+        setIsModalOpen(false);
+        setUserToDelete(null);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -118,10 +153,47 @@ const ViewUsers = () => {
     }
   };
 
+  const openDeleteModal = (userId) => {
+    if (userId === currentUserId) {
+        setNotification({
+            show: true,
+            text: "You cannot delete yourself",
+            icon: <FaExclamationCircle />,
+            bgColor: "bg-red-100",
+            color: "text-red-500",
+          });
+          setTimeout(() => {
+            setNotification({ show: false, message: "", icon: null, bgColor: "", color: "" });
+          }, 2000);
+          return;
+    }
+
+    setUserToDelete(userId);
+    setIsModalOpen(true);
+  };
+
   const displayedUsers = updateDisplayedUsers();
 
   return (
     <>
+    {notification.show && (
+           <Notification
+             text={notification.text}
+             icon={notification.icon}
+             bgColor={notification.bgColor}
+             color={notification.color}
+           />
+         )}
+          <Modal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            title="Delete Event"
+            message="Are you sure you want to delete this event?"
+            color="text-red-500"
+            bgColor="bg-red-500"
+            icon={RiDeleteBin6Fill}
+            onConfirm={handleDeleteUser}
+          />
       <div className="border-b pb-3 border-gray-300">
         <div className="relative">
           <div className="absolute flex items-center ml-2 h-full">
@@ -262,6 +334,9 @@ const ViewUsers = () => {
                                   data-modal-target="updateProductModal"
                                   data-modal-toggle="updateProductModal"
                                   className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-blue-500 cursor-pointer"
+                                  onClick={() =>
+                                    navigate(`/edit-user/${user.id}`)
+                                  }
                                 >
                                   <FaEdit className="w-4 h-4 mr-2" />
                                   Edit
@@ -273,6 +348,7 @@ const ViewUsers = () => {
                                   data-modal-target="deleteModal"
                                   data-modal-toggle="deleteModal"
                                   className="flex w-full items-center py-2 px-4 hover:bg-gray-100 text-red-500 cursor-pointer"
+                                  onClick={() => openDeleteModal(user.id)}
                                 >
                                   <RiDeleteBin6Fill className="w-4 h-4 mr-2" />
                                   Delete
@@ -291,7 +367,12 @@ const ViewUsers = () => {
 
           <div className="flex justify-between items-center px-4 py-3">
             <div className="text-sm text-slate-500">
-              Showing <b>{(currentPage - 1) * usersPerPage + 1}-{Math.min(currentPage * usersPerPage, filteredUsers.length)}</b> of {filteredUsers.length}
+              Showing{" "}
+              <b>
+                {(currentPage - 1) * usersPerPage + 1}-
+                {Math.min(currentPage * usersPerPage, filteredUsers.length)}
+              </b>{" "}
+              of {filteredUsers.length}
             </div>
             <div className="flex space-x-1">
               {currentPage > 1 && (

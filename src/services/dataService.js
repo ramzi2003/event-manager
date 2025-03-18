@@ -167,6 +167,23 @@ const deleteEvent = async (eventId) => {
   }
 };
 
+const deleteUser = async (userId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+    await axios.delete(`${API_URL}accounts/users/${userId}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw error;
+  }
+};
+
 const deleteTask = async (taskId) => {
   try {
     const token = localStorage.getItem("accessToken");
@@ -298,6 +315,7 @@ const dataService = {
   updateTask,
   fetchUserTypes,
   fetchUsers,
+  deleteUser,
 };
 
 export default dataService;

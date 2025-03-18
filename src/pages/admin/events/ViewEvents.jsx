@@ -154,7 +154,7 @@ const ViewEvents = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Delete Event"
-        message="Are you sure you want to delete this event?"
+        message="Are you sure you want to delete this user?"
         color="text-red-500"
         bgColor="bg-red-500"
         icon={RiDeleteBin6Fill}

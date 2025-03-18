@@ -38,8 +38,8 @@ const fetchUserInfo = async () => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    const { is_admin, department, username, email, first_name, last_name, user_type } = response.data;
-    const userInfo = { is_admin, department, username, email, first_name, last_name, user_type };
+    const { is_admin, department, username, email, first_name, last_name, user_type, id } = response.data;
+    const userInfo = { is_admin, department, username, email, first_name, last_name, user_type, id };
     localStorage.setItem("user", JSON.stringify(userInfo));
     return userInfo;
   } catch (error) {
@@ -52,8 +52,8 @@ const fetchUserInfo = async () => {
             Authorization: `Bearer ${newAccessToken}`,
           },
         });
-        const { is_admin, department, username, email, first_name, last_name, user_type } = response.data;
-        const userInfo = { is_admin, department, username, email, first_name, last_name, user_type };
+        const { is_admin, department, username, email, first_name, last_name, user_type, id } = response.data;
+        const userInfo = { is_admin, department, username, email, first_name, last_name, user_type, id };
         localStorage.setItem("user", JSON.stringify(userInfo));
         return userInfo;
       } catch (refreshError) {
