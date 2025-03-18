@@ -61,7 +61,7 @@ const ViewTasks = () => {
 
         const tasksData = await dataService.fetchTasks();
         setTasks(tasksData);
-        console.log(tasksData);
+        
       } catch (error) {
         console.error("Error fetching data:", error);
       }

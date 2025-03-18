@@ -20,6 +20,42 @@ const fetchDepartments = async () => {
   }
 };
 
+const fetchUsers = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+    const response = await axios.get(`${API_URL}accounts/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw error;
+  }
+};
+
+const fetchUserTypes = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+    const response = await axios.get(`${API_URL}accounts/user-type`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user types:", error);
+    throw error;
+  }
+};
+
 const fetchEvents = async () => {
   try {
     const token = localStorage.getItem("accessToken");
@@ -260,6 +296,8 @@ const dataService = {
   createTask,
   fetchTaskById,
   updateTask,
+  fetchUserTypes,
+  fetchUsers,
 };
 
 export default dataService;

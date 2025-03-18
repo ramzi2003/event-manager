@@ -261,13 +261,21 @@ function Sidebar() {
                       </svg>
                       <ul className="duration-400 flex max-h-0 flex-col overflow-hidden rounded-xl bg-gray-100 font-medium transition-all duration-300 peer-checked:max-h-96">
                         <Link to="/view-users">
-                          <li className="flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm text-gray-600 transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600">
+                         <li  className={`flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ${
+                              isActive("/view-users")
+                                ? "border-l-4 border-l-blue-600 text-blue-600"
+                                : "text-gray-600"
+                            }`}>
                             <ViewfinderCircleIcon className="mr-4 h-5 w-5 align-middle" />
                             View Users
                           </li>
                         </Link>
                         <Link to="/create-user">
-                          <li className="flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm text-gray-600 transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600">
+                         <li  className={`flex m-2 cursor-pointer border-l-blue-600 py-3 pl-5 text-sm transition-all duration-100 ease-in-out hover:border-l-4 hover:text-blue-600 ${
+                              isActive("/create-user")
+                                ? "border-l-4 border-l-blue-600 text-blue-600"
+                                : "text-gray-600"
+                            }`}>
                             <UserPlusIcon className="mr-4 h-5 w-5 align-middle" />
                             Create User
                           </li>
