@@ -110,6 +110,24 @@ const fetchTaskById = async (taskId) => {
   }
 };
 
+const fetchUserById = async (userId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+    const response = await axios.get(`${API_URL}accounts/users/${userId}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    throw error;
+  }
+};
+
 const fetchTasks = async () => {
   try {
     const token = localStorage.getItem("accessToken");
@@ -255,6 +273,24 @@ const createTask = async (taskData) => {
   }
 };
 
+const createUser = async (userData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+    const response = await axios.post(`${API_URL}accounts/register/`, userData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating user:", error);
+    throw error;
+  }
+};
+
 const updateEvent = async (eventId, eventData) => {
   try {
     const token = localStorage.getItem("accessToken");
@@ -273,6 +309,28 @@ const updateEvent = async (eventId, eventData) => {
     return response.data;
   } catch (error) {
     console.error("Error updating event:", error);
+    throw error;
+  }
+};
+
+const updateUser = async (userId, userData) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No access token found");
+    }
+    const response = await axios.put(
+      `${API_URL}accounts/users/${userId}/`,
+      userData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user:", error);
     throw error;
   }
 };
@@ -315,6 +373,9 @@ const dataService = {
   updateTask,
   fetchUserTypes,
   fetchUsers,
+  createUser,
+  updateUser,
+  fetchUserById,
   deleteUser,
 };
 

@@ -18,6 +18,8 @@ import ViewTasks from "../pages/admin/tasks/ViewTasks";
 import CreateTask from "../pages/admin/tasks/Createtask";
 import EditTask from "../pages/admin/tasks/EditTask";
 import ViewUsers from "../pages/admin/users/ViewUsers";
+import CreateUser from "../pages/admin/users/CreateUser";
+import EditUser from "../pages/admin/users/EditUser";
 
 const AppRoutes = () => {
   const { user } = useSelector((state) => state.auth);
@@ -69,6 +71,8 @@ const AppRoutes = () => {
             <Route path="/create-task" element={<CreateTask />} />
             <Route path="/edit-task/:taskId" element={<EditTask />} />
             <Route path="/view-users" element={<ViewUsers />} />
+            <Route path="/create-user" element={<CreateUser />} />
+            <Route path="/edit-user/:userId" element={<EditUser />} />
           </Route>
         </Route>
       </Route>

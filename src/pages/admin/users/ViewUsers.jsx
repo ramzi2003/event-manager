@@ -86,7 +86,7 @@ const ViewUsers = () => {
 
     if (selectedDepartment !== "All") {
       filtered = filtered.filter(
-        (user) => user.department.name === selectedDepartment
+        (user) => user.department === selectedDepartment
       );
     }
 
@@ -170,6 +170,11 @@ const ViewUsers = () => {
 
     setUserToDelete(userId);
     setIsModalOpen(true);
+  };
+
+  const getDepartmentName = (departmentId) => {
+    const department = departments.find((dept) => dept.id === departmentId);
+    return department ? department.name : "Unknown";
   };
 
   const displayedUsers = updateDisplayedUsers();
@@ -305,7 +310,7 @@ const ViewUsers = () => {
                   </td>
                   <td className="p-4 py-5">
                     <p className="text-sm text-slate-500">
-                      {user.department.name}
+                      {getDepartmentName(user.department)}
                     </p>
                   </td>
                   <td className="p-4 py-5">
