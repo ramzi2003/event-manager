@@ -24,7 +24,7 @@ export const login = createAsyncThunk(
       const countTasks = tasksData.filter(
         (task) =>
           (task.status === "not_started" || task.status === "in_progress") &&
-          task.responsible_department === userInfo.department.id
+          task.responsible_department === userInfo.department
       ).length;
 
       // Dispatch the task count

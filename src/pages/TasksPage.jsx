@@ -57,7 +57,7 @@ const TasksPage = () => {
     const countTasks = tasks.filter(
       (task) =>
         (task.status === "not_started" || task.status === "in_progress") &&
-        task.responsible_department === user.department.id
+        task.responsible_department === user.department
     ).length;
     dispatch(setTaskCount(countTasks));
   }, [tasks, user, dispatch]);
@@ -153,7 +153,7 @@ const TasksPage = () => {
       selectedEvent === "all" || task.event === parseInt(selectedEvent);
     const matchesMonth = isTaskInSelectedMonth(task);
     const matchesDepartment =
-      user && task.responsible_department === user.department.id;
+      user && task.responsible_department === user.department;
     return (
       matchesSearchQuery &&
       matchesStatus &&

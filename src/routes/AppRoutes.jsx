@@ -32,7 +32,7 @@ const AppRoutes = () => {
         const countTasks = tasksData.filter(
           (task) =>
             (task.status === "not_started" || task.status === "in_progress") &&
-            task.responsible_department === user.department.id
+            task.responsible_department === user.department
         ).length;
         dispatch(setTaskCount(countTasks));
       } catch (error) {
