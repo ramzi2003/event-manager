@@ -44,7 +44,13 @@ function CreateEvent() {
         color: "text-red-500",
       });
       setTimeout(() => {
-        setNotification({ show: false, message: "", icon: null, bgColor: "", color: "" });
+        setNotification({
+          show: false,
+          message: "",
+          icon: null,
+          bgColor: "",
+          color: "",
+        });
       }, 2000);
       setLoading(false);
       setSubmitting(false);
@@ -66,7 +72,13 @@ function CreateEvent() {
           color: "text-red-500",
         });
         setTimeout(() => {
-          setNotification({ show: false, message: "", icon: null, bgColor: "", color: "" });
+          setNotification({
+            show: false,
+            message: "",
+            icon: null,
+            bgColor: "",
+            color: "",
+          });
         }, 2000);
         setLoading(false);
       } else {
@@ -87,7 +99,13 @@ function CreateEvent() {
           color: "text-green-500",
         });
         setTimeout(() => {
-          setNotification({ show: false, message: "", icon: null, bgColor: "", color: "" });
+          setNotification({
+            show: false,
+            message: "",
+            icon: null,
+            bgColor: "",
+            color: "",
+          });
           setLoading(false);
           navigate("/view-events"); // Redirect to /view-events
         }, 2000);
@@ -124,7 +142,7 @@ function CreateEvent() {
     <>
       {notification.show && (
         <Notification
-          text={notification.text}
+          text={notification.message}
           icon={notification.icon}
           bgColor={notification.bgColor}
           color={notification.color}
@@ -159,7 +177,7 @@ function CreateEvent() {
           onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
-            <Form className="mx-auto">
+            <Form className="mx-auto" autoComplete="off">
               <div className="grid grid-cols-2 gap-6">
                 <div className="relative z-0 w-full mb-5 group">
                   <Field
@@ -294,7 +312,7 @@ function CreateEvent() {
                     htmlFor="gl_cc_info"
                     className="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                   >
-                    GL/CC Information
+                    GL/CC
                   </label>
                 </div>
                 <div className="relative z-0 w-full mb-5 group">
@@ -320,7 +338,7 @@ function CreateEvent() {
                       type="checkbox"
                       name="accommodation"
                       id="accommodation"
-                      className="w-4 h-4 text-blue-600 bg-transparent border-gray-300 rounded-sm focus:ring-blue-500"
+                      className="w-4 h-4 text-blue-600 bg-transparent border-gray-300 rounded-sm focus:ring-blue-500 cursor-pointer"
                     />
                     <label
                       htmlFor="accommodation"

@@ -23,15 +23,9 @@ function CreateTask() {
       try {
         const fetchedEvents = await dataService.fetchEvents();
         setEvents(fetchedEvents);
+        console.log(events)
       } catch (error) {
         console.error("Error fetching events:", error);
-        setNotification({
-          show: true,
-          message: "Error fetching events",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
       }
     };
 
@@ -41,19 +35,12 @@ function CreateTask() {
         setDepartment(fetchedDepartment);
       } catch (error) {
         console.error("Error fetching department:", error);
-        setNotification({
-          show: true,
-          message: "Error fetching department",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
       }
     };
 
     fetchDepartment();
     fetchEvents();
-  }, []); // Add dependency array to run only once
+  }, []);
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setLoading(true);
@@ -116,7 +103,7 @@ function CreateTask() {
         await dataService.createTask(transformedValues);
         setNotification({
           show: true,
-          message: "Event created successfully!",
+          message: "Task created successfully!",
           icon: <FaCheckCircle />,
           bgColor: "bg-green-100",
           color: "text-green-500",
@@ -203,7 +190,7 @@ function CreateTask() {
           onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
-            <Form className="mx-auto">
+            <Form className="mx-auto" autoComplete="off">
               <div className="grid grid-cols-2 gap-6">
                 <div className="relative z-0 w-full mb-5 group">
                   <Field

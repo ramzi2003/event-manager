@@ -2,12 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { IoEllipsisHorizontalSharp } from "react-icons/io5";
-import { FaEdit } from "react-icons/fa";
+import { FaCheckCircle, FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import dataService from "../../../services/dataService";
 import Notification from "../../../layout/modals/Notification";
 import Modal from "../../../layout/modals/Modal";
-import { CheckIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 
 const ViewEvents = () => {
@@ -107,10 +106,12 @@ const ViewEvents = () => {
       await dataService.deleteEvent(eventToDelete);
       setEvents(events.filter((event) => event.id !== eventToDelete));
       setNotification({
-        show: true,
-        text: "Event deleted successfully",
-        icon: <CheckIcon />,
-      });
+                    show: true,
+                    text: "Event deleted successfully!",
+                    icon: <FaCheckCircle />,
+                    bgColor: "bg-green-100",
+                    color: "text-green-500",
+                  });
       setTimeout(() => {
         setNotification({ show: false, text: "", icon: null });
       }, 2000);
@@ -154,7 +155,7 @@ const ViewEvents = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Delete Event"
-        message="Are you sure you want to delete this user?"
+        message="Are you sure you want to delete this event?"
         color="text-red-500"
         bgColor="bg-red-500"
         icon={RiDeleteBin6Fill}
@@ -190,7 +191,7 @@ const ViewEvents = () => {
               },
               {
                 label: "Payment Status",
-                options: ["All", "Close", "In Progress", "Open"],
+                options: ["All", "Open", "In Progress", "Close"],
               },
             ].map((filter, index) => (
               <div key={index} className="relative">

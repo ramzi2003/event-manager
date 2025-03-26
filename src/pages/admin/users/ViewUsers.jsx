@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import dataService from "../../../services/dataService";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import { FaEdit, FaExclamationCircle } from "react-icons/fa";
+import { FaCheckCircle, FaEdit, FaExclamationCircle } from "react-icons/fa";
 import { IoEllipsisHorizontalSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { CheckIcon } from "@heroicons/react/24/outline";
 import Notification from "../../../layout/modals/Notification";
 import Modal from "../../../layout/modals/Modal";
 import { useSelector } from "react-redux";
@@ -36,11 +35,13 @@ const ViewUsers = () => {
     try {
         await dataService.deleteUser(userToDelete);
         setUsers(users.filter((user) => user.id !== userToDelete));
-        setNotification({
-            show: true,
-            text: "User deleted successfully",
-            icon: <CheckIcon />,
-          });
+      setNotification({
+                show: true,
+                text: "User deleted successfully!",
+                icon: <FaCheckCircle />,
+                bgColor: "bg-green-100",
+                color: "text-green-500",
+              });
           setTimeout(() => {
             setNotification({ show: false, text: "", icon: null });
           }, 2000);
@@ -57,6 +58,7 @@ const ViewUsers = () => {
       try {
         const departmentsData = await dataService.fetchDepartments();
         setDepartments(departmentsData);
+        console.log(departmentsData)
 
         const userTypesData = await dataService.fetchUserTypes();
         const userTypeKeys = Object.keys(userTypesData);
@@ -65,6 +67,8 @@ const ViewUsers = () => {
         const usersData = await dataService.fetchUsers();
         setUsers(usersData);
         setFilteredUsers(usersData);
+        console.log(usersData)
+        console.log(filteredUsers)
       } catch (error) {
         console.error("Error fetching departments and user types:", error);
       }
@@ -83,7 +87,7 @@ const ViewUsers = () => {
 
   const filterUsers = () => {
     let filtered = users;
-
+    console.log(selectedDepartment)
     if (selectedDepartment !== "All") {
       filtered = filtered.filter(
         (user) => user.department === selectedDepartment
@@ -226,8 +230,16 @@ const ViewUsers = () => {
               {
                 label: "Department",
                 options: ["All", ...departments.map((dept) => dept.name)],
-                value: selectedDepartment,
-                onChange: (e) => setSelectedDepartment(e.target.value),
+                value: selectedDepartment === "All" ? "All" : departments.find(dept => dept.id === selectedDepartment)?.name,
+                onChange: (e) => {
+                  const selectedValue = e.target.value;
+                  if (selectedValue === "All") {
+                    setSelectedDepartment("All");
+                  } else {
+                    const selectedDept = departments.find((dept) => dept.name === selectedValue);
+                    setSelectedDepartment(selectedDept ? selectedDept.id : "All");
+                  }
+                },
               },
               {
                 label: "User Type",

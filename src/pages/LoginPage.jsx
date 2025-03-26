@@ -38,7 +38,7 @@ function LoginPage() {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-center select-none">
                 Sign In
               </h1>
-              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
+              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit} autoComplete="off">
                 <div>
                   <label
                     htmlFor="username"

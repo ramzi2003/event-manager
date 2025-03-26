@@ -10,12 +10,11 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { IoEllipsisHorizontalSharp } from "react-icons/io5";
-import { FaEdit } from "react-icons/fa";
+import { FaCheckCircle, FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import Notification from "../../../layout/modals/Notification";
 import Modal from "../../../layout/modals/Modal";
-import { CheckIcon } from "@heroicons/react/24/outline";
 
 const ViewTasks = () => {
   const [departments, setDepartments] = useState([]);
@@ -61,7 +60,6 @@ const ViewTasks = () => {
 
         const tasksData = await dataService.fetchTasks();
         setTasks(tasksData);
-        
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -152,8 +150,10 @@ const ViewTasks = () => {
       setTasks(tasks.filter((task) => task.id !== taskToDelete));
       setNotification({
         show: true,
-        text: "Task deleted successfully",
-        icon: <CheckIcon />,
+        text: "Task deleted successfully!",
+        icon: <FaCheckCircle />,
+        bgColor: "bg-green-100",
+        color: "text-green-500",
       });
       setTimeout(() => {
         setNotification({ show: false, text: "", icon: null });

@@ -1,14 +1,37 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInfo } from "../store/authSlice";
+import dataService from "../services/dataService";
 
 const MyProfilePage = () => {
   const dispatch = useDispatch();
   const { user, isLoading, isError } = useSelector((state) => state.auth);
+  const [departments, setDepartments] = useState([]);
+  const [departmentName, setDepartmentName] = useState("N/A");
 
   useEffect(() => {
     dispatch(fetchUserInfo());
   }, [dispatch]);
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const departmentsData = await dataService.fetchDepartments();
+        setDepartments(departmentsData);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
+
+  useEffect(() => {
+    if (user && departments.length > 0) {
+      const department = departments.find((dept) => dept.id === user.department);
+      setDepartmentName(department ? department.name : "N/A");
+    }
+  }, [user, departments]);
 
   if (isLoading) {
     return (
@@ -53,7 +76,7 @@ const MyProfilePage = () => {
         </div>
 
         <div className="text-sm leading-normal mt-0 mb-2 text-gray-400 font-bold uppercase">
-          Department: {user?.department?.name || "N/A"}
+          Department: {departmentName}
         </div>
         <div className="text-sm leading-normal mt-0 mb-2 text-gray-400 font-bold uppercase">
           User Role: {user?.user_type || "N/A"}
