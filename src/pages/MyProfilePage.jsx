@@ -28,7 +28,9 @@ const MyProfilePage = () => {
 
   useEffect(() => {
     if (user && departments.length > 0) {
-      const department = departments.find((dept) => dept.id === user.department);
+      const department = departments.find(
+        (dept) => dept.id === user.department
+      );
       setDepartmentName(department ? department.name : "N/A");
     }
   }, [user, departments]);
