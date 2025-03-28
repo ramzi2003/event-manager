@@ -3,12 +3,14 @@ import axios from "axios";
 const API_URL = "http://10.121.4.116:8000/";
 
 const getToken = () => {
-  return localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+  return (
+    localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken")
+  );
 };
 
 const fetchDepartments = async () => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -26,7 +28,7 @@ const fetchDepartments = async () => {
 
 const fetchUsers = async () => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -44,7 +46,7 @@ const fetchUsers = async () => {
 
 const fetchUserTypes = async () => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -62,7 +64,7 @@ const fetchUserTypes = async () => {
 
 const fetchEvents = async () => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -80,7 +82,7 @@ const fetchEvents = async () => {
 
 const fetchEventById = async (eventId) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -98,7 +100,7 @@ const fetchEventById = async (eventId) => {
 
 const fetchTaskById = async (taskId) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -116,7 +118,7 @@ const fetchTaskById = async (taskId) => {
 
 const fetchUserById = async (userId) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -134,7 +136,7 @@ const fetchUserById = async (userId) => {
 
 const fetchTasks = async () => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -152,7 +154,7 @@ const fetchTasks = async () => {
 
 const updateTaskStatus = async (taskId, status) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -174,7 +176,7 @@ const updateTaskStatus = async (taskId, status) => {
 
 const deleteEvent = async (eventId) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -191,7 +193,7 @@ const deleteEvent = async (eventId) => {
 
 const deleteUser = async (userId) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -208,7 +210,7 @@ const deleteUser = async (userId) => {
 
 const deleteTask = async (taskId) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -225,7 +227,7 @@ const deleteTask = async (taskId) => {
 
 const fetchVenues = async () => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No authentication token found");
     }
@@ -243,7 +245,7 @@ const fetchVenues = async () => {
 
 const createEvent = async (eventData) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -259,9 +261,37 @@ const createEvent = async (eventData) => {
   }
 };
 
+const resetPasswordEmailLetter = async (email) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}accounts/password/reset/`,
+      email
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error;
+  }
+};
+
+const resetPassword = async (resetData) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}auth/users/reset_password_confirm/
+`,
+      resetData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error reseting password:", error);
+    console.log(resetData)
+    throw error;
+  }
+};
+
 const createTask = async (taskData) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -279,15 +309,19 @@ const createTask = async (taskData) => {
 
 const createUser = async (userData) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
-    const response = await axios.post(`${API_URL}accounts/register/`, userData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.post(
+      `${API_URL}accounts/register/`,
+      userData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error creating user:", error);
@@ -297,7 +331,7 @@ const createUser = async (userData) => {
 
 const updateEvent = async (eventId, eventData) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -319,7 +353,7 @@ const updateEvent = async (eventId, eventData) => {
 
 const updateUser = async (userId, userData) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -341,7 +375,7 @@ const updateUser = async (userId, userData) => {
 
 const updateTask = async (taskId, taskData) => {
   try {
-   const token = getToken();
+    const token = getToken();
     if (!token) {
       throw new Error("No access token found");
     }
@@ -381,6 +415,8 @@ const dataService = {
   updateUser,
   fetchUserById,
   deleteUser,
+  resetPasswordEmailLetter,
+  resetPassword,
 };
 
 export default dataService;

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login, reset } from "../store/authSlice";
+import { login, reset } from "../../store/authSlice";
 import { useNavigate } from "react-router-dom"; 
 import { useState, useEffect } from "react";
 
@@ -100,7 +100,7 @@ function LoginPage() {
                     to={"/forgot-password"}
                     className="text-sm font-medium text-blue-600 hover:underline cursor-pointer select-none"
                   >
-                    Forgot password?
+                    Forgot password
                   </Link>
                 </div>
                 <button

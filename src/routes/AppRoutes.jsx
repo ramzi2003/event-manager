@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import LoginPage from "../pages/LoginPage";
+import LoginPage from "../pages/public/LoginPage";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import RoleBasedRoute from "./RoleBasedRoute";
@@ -20,6 +20,9 @@ import EditTask from "../pages/admin/tasks/EditTask";
 import ViewUsers from "../pages/admin/users/ViewUsers";
 import CreateUser from "../pages/admin/users/CreateUser";
 import EditUser from "../pages/admin/users/EditUser";
+import ForgotPassword from "../pages/public/ForgotPassword";
+import EmailSuccess from "../layout/EmailSuccess";
+import ResetPassword from "../pages/public/ResetPassword";
 
 const AppRoutes = () => {
   const { user } = useSelector((state) => state.auth);
@@ -53,9 +56,11 @@ const AppRoutes = () => {
       />
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgot-password-success" element={<EmailSuccess />} />
         <Route
-          path="/forgot-password"
-          element={<div>Forgot password Component Here</div>}
+          path="/auth/users/reset_password_confirm/:uid/:token/"
+          element={<ResetPassword />}
         />
       </Route>
       <Route element={<ProtectedRoute />}>
