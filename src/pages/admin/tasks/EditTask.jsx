@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import dataService from "../../../services/dataService";
-import Notification from "../../../layout/modals/Notification";
-import { FaExclamationCircle, FaCheckCircle } from "react-icons/fa";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function EditTask() {
   const { taskId } = useParams();
@@ -19,13 +19,6 @@ function EditTask() {
   });
   const [events, setEvents] = useState([]);
   const [departments, setDepartments] = useState([]);
-  const [notification, setNotification] = useState({
-    show: false,
-    message: "",
-    icon: null,
-    bgColor: "",
-    color: "",
-  });
   const [setLoading] = useState(true);
   const [setError] = useState(null);
 
@@ -79,26 +72,17 @@ function EditTask() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const requiredFields = ["title", "due_date", "status", "event", "responsible_department"];
+    const requiredFields = [
+      "title",
+      "due_date",
+      "status",
+      "event",
+      "responsible_department",
+    ];
     const isEmpty = requiredFields.every((field) => !taskData[field]);
 
     if (isEmpty) {
-      setNotification({
-        show: true,
-        message: "The form is empty. Please fill in the required fields.",
-        icon: <FaExclamationCircle />,
-        bgColor: "bg-red-100",
-        color: "text-red-500",
-      });
-      setTimeout(() => {
-        setNotification({
-          show: false,
-          message: "",
-          icon: null,
-          bgColor: "",
-          color: "",
-        });
-      }, 2000);
+      toast.error("The form is empty. Please fill in the required fields.");
       return;
     }
 
@@ -119,22 +103,7 @@ function EditTask() {
       );
 
       if (tasksExist && taskData.title !== initialTaskData.title) {
-        setNotification({
-          show: true,
-          message: "A task with the same name already exists.",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-        }, 2000);
+        toast.error("A task with the same name already exists");
         setTaskData((prevData) => ({
           ...prevData,
           title: initialTaskData.title,
@@ -149,61 +118,25 @@ function EditTask() {
         console.log("Request data:", transformedValues);
 
         await dataService.updateTask(taskId, transformedValues);
-        setNotification({
-          show: true,
-          message: "Task updated successfully!",
-          icon: <FaCheckCircle />,
-          bgColor: "bg-green-100",
-          color: "text-green-500",
-        });
-        setIsNonInteractive(true); // Make the page non-interactive
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-          setIsNonInteractive(false); // Restore interactivity
-          navigate("/view-tasks"); // Redirect to /view-events
-        }, 2000);
+        toast.success("Task updated successfully");
+        setIsNonInteractive(false); // Restore interactivity
+        navigate("/view-tasks"); // Redirect to /view-events
       }
     } catch (error) {
       console.error("Error updating task:", error);
 
       // Log detailed error information
       if (error.response && error.response.data) {
-        console.error("Error details:", error.response.data);
-        setNotification({
-          show: true,
-          message: `Error: ${error.response.data.message}`,
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-      } else {
-        setNotification({
-          show: true,
-          message: "An unexpected error occurred.",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
+        toast.error(
+          error.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
       }
     }
   };
 
   return (
     <>
-      {notification.show && (
-        <Notification
-          text={notification.message}
-          icon={notification.icon}
-          bgColor={notification.bgColor}
-          color={notification.color}
-        />
-      )}
       <div
         className={`h-full overflow-y-scroll scroll-smooth no-scrollbar${
           isNonInteractive ? " pointer-events-none" : ""

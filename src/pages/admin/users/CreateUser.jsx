@@ -1,14 +1,13 @@
 import { Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import {
-  FaCheckCircle,
-  FaExclamationCircle,
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
 import dataService from "../../../services/dataService";
 import { useNavigate } from "react-router-dom";
-import Notification from "../../../layout/modals/Notification";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CreateUser() {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,13 +15,6 @@ function CreateUser() {
   const [userType, setUserType] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [notification, setNotification] = useState({
-    show: false,
-    message: "",
-    icon: null,
-    bgColor: "",
-    color: "",
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,22 +43,7 @@ function CreateUser() {
     const isEmpty = requiredFields.every((field) => !values[field]);
 
     if (isEmpty) {
-      setNotification({
-        show: true,
-        message: "Please fill in all required fields",
-        icon: <FaExclamationCircle />,
-        bgColor: "bg-red-100",
-        color: "text-red-500",
-      });
-      setTimeout(() => {
-        setNotification({
-          show: false,
-          message: "",
-          icon: null,
-          bgColor: "",
-          color: "",
-        });
-      }, 2000);
+      toast.error("Please fill in all required fields")
       setLoading(false);
       setSubmitting(false);
       return;
@@ -79,22 +56,7 @@ function CreateUser() {
       );
 
       if (userExists) {
-        setNotification({
-          show: true,
-          message: "A user with this username  or email already exists",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-        }, 2000);
+        toast.error("A user with this username  or email already exists");
         setLoading(false);
       } else {
         const transformedValues = {
@@ -103,54 +65,15 @@ function CreateUser() {
         };
 
         await dataService.createUser(transformedValues);
-        setNotification({
-          show: true,
-          message: "User created successfully!",
-          icon: <FaCheckCircle />,
-          bgColor: "bg-green-100",
-          color: "text-green-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-          setLoading(false);
-          navigate("/view-users");
-        }, 2000);
+        toast.success("User created successfully");
+        setLoading(false);
+        navigate("/view-users");
       }
     } catch (error) {
       console.error("Error creating user:", error);
 
       if (error.response && error.response.data) {
-        console.error("Error details:", error.response.data);
-        setNotification({
-          show: true,
-          message: `Error: ${error.response.data.message}`,
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-      } else {
-        setNotification({
-          show: true,
-          message: "An unexpected error occurred.",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-        }, 2000);
+        toast.error(error.response?.data?.message || "Something went wrong. Try again later");
       }
 
       setLoading(false);
@@ -161,14 +84,6 @@ function CreateUser() {
 
   return (
     <>
-      {notification.show && (
-        <Notification
-          text={notification.message}
-          icon={notification.icon}
-          bgColor={notification.bgColor}
-          color={notification.color}
-        />
-      )}
       <div
         className={`h-full overflow-y-scroll scroll-smooth no-scrollbar ${
           loading ? "pointer-events-none" : ""

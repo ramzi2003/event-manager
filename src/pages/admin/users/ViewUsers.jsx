@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import dataService from "../../../services/dataService";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import { FaCheckCircle, FaEdit, FaExclamationCircle } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import { IoEllipsisHorizontalSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import Notification from "../../../layout/modals/Notification";
 import Modal from "../../../layout/modals/Modal";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ViewUsers = () => {
   const [departments, setDepartments] = useState([]);
@@ -21,11 +22,6 @@ const ViewUsers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [userToDelete, setUserToDelete] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [notification, setNotification] = useState({
-    show: false,
-    text: "",
-    icon: null,
-  });
   const usersPerPage = 5;
   const navigate = useNavigate();
 
@@ -33,23 +29,18 @@ const ViewUsers = () => {
 
   const handleDeleteUser = async () => {
     try {
-        await dataService.deleteUser(userToDelete);
-        setUsers(users.filter((user) => user.id !== userToDelete));
-      setNotification({
-                show: true,
-                text: "User deleted successfully!",
-                icon: <FaCheckCircle />,
-                bgColor: "bg-green-100",
-                color: "text-green-500",
-              });
-          setTimeout(() => {
-            setNotification({ show: false, text: "", icon: null });
-          }, 2000);
+      await dataService.deleteUser(userToDelete);
+      setUsers(users.filter((user) => user.id !== userToDelete));
+
+      toast.success("User deleted successfully");
     } catch (error) {
-        console.error("Error deleting user:", error);
+      console.error("Error deleting user:", error);
+      toast.error(
+        error.response?.data?.message || "Something went wrong. Try again later"
+      );
     } finally {
-        setIsModalOpen(false);
-        setUserToDelete(null);
+      setIsModalOpen(false);
+      setUserToDelete(null);
     }
   };
 
@@ -58,7 +49,7 @@ const ViewUsers = () => {
       try {
         const departmentsData = await dataService.fetchDepartments();
         setDepartments(departmentsData);
-        console.log(departmentsData)
+        console.log(departmentsData);
 
         const userTypesData = await dataService.fetchUserTypes();
         const userTypeKeys = Object.keys(userTypesData);
@@ -67,8 +58,8 @@ const ViewUsers = () => {
         const usersData = await dataService.fetchUsers();
         setUsers(usersData);
         setFilteredUsers(usersData);
-        console.log(usersData)
-        console.log(filteredUsers)
+        console.log(usersData);
+        console.log(filteredUsers);
       } catch (error) {
         console.error("Error fetching departments and user types:", error);
       }
@@ -87,7 +78,7 @@ const ViewUsers = () => {
 
   const filterUsers = () => {
     let filtered = users;
-    console.log(selectedDepartment)
+    console.log(selectedDepartment);
     if (selectedDepartment !== "All") {
       filtered = filtered.filter(
         (user) => user.department === selectedDepartment
@@ -159,17 +150,8 @@ const ViewUsers = () => {
 
   const openDeleteModal = (userId) => {
     if (userId === currentUserId) {
-        setNotification({
-            show: true,
-            text: "You cannot delete yourself",
-            icon: <FaExclamationCircle />,
-            bgColor: "bg-red-100",
-            color: "text-red-500",
-          });
-          setTimeout(() => {
-            setNotification({ show: false, message: "", icon: null, bgColor: "", color: "" });
-          }, 2000);
-          return;
+      toast.error("You cannot delete yourself");
+      return;
     }
 
     setUserToDelete(userId);
@@ -185,24 +167,16 @@ const ViewUsers = () => {
 
   return (
     <>
-    {notification.show && (
-           <Notification
-             text={notification.text}
-             icon={notification.icon}
-             bgColor={notification.bgColor}
-             color={notification.color}
-           />
-         )}
-          <Modal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            title="Delete Event"
-            message="Are you sure you want to delete this event?"
-            color="text-red-500"
-            bgColor="bg-red-500"
-            icon={RiDeleteBin6Fill}
-            onConfirm={handleDeleteUser}
-          />
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Delete Event"
+        message="Are you sure you want to delete this event?"
+        color="text-red-500"
+        bgColor="bg-red-500"
+        icon={RiDeleteBin6Fill}
+        onConfirm={handleDeleteUser}
+      />
       <div className="border-b pb-3 border-gray-300">
         <div className="relative">
           <div className="absolute flex items-center ml-2 h-full">
@@ -230,14 +204,22 @@ const ViewUsers = () => {
               {
                 label: "Department",
                 options: ["All", ...departments.map((dept) => dept.name)],
-                value: selectedDepartment === "All" ? "All" : departments.find(dept => dept.id === selectedDepartment)?.name,
+                value:
+                  selectedDepartment === "All"
+                    ? "All"
+                    : departments.find((dept) => dept.id === selectedDepartment)
+                        ?.name,
                 onChange: (e) => {
                   const selectedValue = e.target.value;
                   if (selectedValue === "All") {
                     setSelectedDepartment("All");
                   } else {
-                    const selectedDept = departments.find((dept) => dept.name === selectedValue);
-                    setSelectedDepartment(selectedDept ? selectedDept.id : "All");
+                    const selectedDept = departments.find(
+                      (dept) => dept.name === selectedValue
+                    );
+                    setSelectedDepartment(
+                      selectedDept ? selectedDept.id : "All"
+                    );
                   }
                 },
               },

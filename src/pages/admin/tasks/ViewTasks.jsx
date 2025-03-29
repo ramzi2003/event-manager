@@ -10,11 +10,12 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { IoEllipsisHorizontalSharp } from "react-icons/io5";
-import { FaCheckCircle, FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import Notification from "../../../layout/modals/Notification";
 import Modal from "../../../layout/modals/Modal";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaEdit } from "react-icons/fa";
 
 const ViewTasks = () => {
   const [departments, setDepartments] = useState([]);
@@ -25,11 +26,6 @@ const ViewTasks = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedDepartment, setSelectedDepartment] = useState("all");
   const [selectedEvent, setSelectedEvent] = useState("all");
-  const [notification, setNotification] = useState({
-    show: false,
-    text: "",
-    icon: null,
-  });
   const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -148,18 +144,10 @@ const ViewTasks = () => {
     try {
       await dataService.deleteTask(taskToDelete);
       setTasks(tasks.filter((task) => task.id !== taskToDelete));
-      setNotification({
-        show: true,
-        text: "Task deleted successfully!",
-        icon: <FaCheckCircle />,
-        bgColor: "bg-green-100",
-        color: "text-green-500",
-      });
-      setTimeout(() => {
-        setNotification({ show: false, text: "", icon: null });
-      }, 2000);
+      toast.success("Task deleted successfully");
     } catch (error) {
       console.error("Error deleting task:", error);
+       toast.error(error.response?.data?.message || "Something went wrong. Try again later");
     } finally {
       setIsModalOpen(false);
       setOpen(false);
@@ -195,9 +183,6 @@ const ViewTasks = () => {
 
   return (
     <>
-      {notification.show && (
-        <Notification text={notification.text} icon={notification.icon} />
-      )}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -2,28 +2,21 @@ import { Formik, Form, Field } from "formik";
 import { useEffect, useState } from "react";
 import dataService from "../../../services/dataService";
 import { useNavigate } from "react-router-dom";
-import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
-import Notification from "../../../layout/modals/Notification";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CreateTask() {
   const [events, setEvents] = useState([]);
   const [department, setDepartment] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [notification, setNotification] = useState({
-    show: false,
-    message: "",
-    icon: null,
-    bgColor: "",
-    color: "",
-  });
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const fetchedEvents = await dataService.fetchEvents();
         setEvents(fetchedEvents);
-        console.log(events)
+        console.log(events);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -48,22 +41,7 @@ function CreateTask() {
     const isEmpty = requiredFields.every((field) => !values[field]);
 
     if (isEmpty) {
-      setNotification({
-        show: true,
-        message: "Please fill in all required fields",
-        icon: <FaExclamationCircle />,
-        bgColor: "bg-red-100",
-        color: "text-red-500",
-      });
-      setTimeout(() => {
-        setNotification({
-          show: false,
-          message: "",
-          icon: null,
-          bgColor: "",
-          color: "",
-        });
-      }, 2000);
+      toast.error("Please fill in all required fields");
       setLoading(false);
       setSubmitting(false);
       return;
@@ -76,22 +54,7 @@ function CreateTask() {
       );
 
       if (taskExists) {
-        setNotification({
-          show: true,
-          message: "A task with this title already exists",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-        }, 2000);
+        toast.error("A task with this title already exists");
         setLoading(false);
       } else {
         const transformedValues = {
@@ -101,54 +64,18 @@ function CreateTask() {
         };
 
         await dataService.createTask(transformedValues);
-        setNotification({
-          show: true,
-          message: "Task created successfully!",
-          icon: <FaCheckCircle />,
-          bgColor: "bg-green-100",
-          color: "text-green-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-          setLoading(false);
-          navigate("/view-tasks");
-        }, 2000);
+        toast.success("Task created successfully");
+        setLoading(false);
+        navigate("/view-tasks");
       }
     } catch (error) {
       console.error("Error creating task:", error);
 
       if (error.response && error.response.data) {
-        console.error("Error details:", error.response.data);
-        setNotification({
-          show: true,
-          message: `Error: ${error.response.data.message}`,
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-      } else {
-        setNotification({
-          show: true,
-          message: "An unexpected error occurred.",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-        }, 2000);
+        toast.error(
+          error.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
       }
 
       setLoading(false);
@@ -159,14 +86,6 @@ function CreateTask() {
 
   return (
     <>
-      {notification.show && (
-        <Notification
-          text={notification.message}
-          icon={notification.icon}
-          bgColor={notification.bgColor}
-          color={notification.color}
-        />
-      )}
       <div
         className={`h-full overflow-y-scroll scroll-smooth no-scrollbar ${
           loading ? "pointer-events-none" : ""

@@ -5,14 +5,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, isSameMonth } from "date-fns";
 import { setTaskCount } from "../store/taskSlice";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import Notification from "../layout/modals/Notification";
-import { CheckIcon } from "@heroicons/react/24/outline";
 
 const TasksPage = () => {
   const [events, setEvents] = useState([]);
@@ -23,11 +23,6 @@ const TasksPage = () => {
   const [selectedEvent, setSelectedEvent] = useState("all");
   const [selectedTask, setSelectedTask] = useState(null);
   const user = useSelector((state) => state.auth.user);
-  const [notification, setNotification] = useState({
-    show: false,
-    text: "",
-    icon: null,
-  });
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false); // Local loading state
@@ -90,20 +85,13 @@ const TasksPage = () => {
             task.id === selectedTask.id ? { ...task, status: newStatus } : task
           )
         );
-        setNotification({
-          show: true,
-          text: "Status changed successfully",
-          icon: <CheckIcon className="w-5 h-5" />,
-        });
-        setTimeout(async () => {
-          setNotification({ show: false, text: "", icon: null });
-
-          const tasksData = await dataService.fetchTasks();
+        toast.info("Status changed successfully");
+        const tasksData = await dataService.fetchTasks();
           setTasks(tasksData);
           setLoading(false);
-        }, 2000);
       } catch (error) {
         console.error("Error updating status:", error);
+        toast.error(error.response?.data?.message || "Failed to change status");
         setLoading(false);
       }
     }
@@ -165,9 +153,6 @@ const TasksPage = () => {
 
   return (
     <>
-      {notification.show && (
-        <Notification text={notification.text} icon={notification.icon} />
-      )}
       <div
         className={`relative ${
           loading ? "pointer-events-none opacity-50" : ""

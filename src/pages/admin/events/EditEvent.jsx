@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import dataService from "../../../services/dataService";
-import Notification from "../../../layout/modals/Notification";
-import { FaExclamationCircle, FaCheckCircle } from "react-icons/fa";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function EditEvent() {
   const { eventId } = useParams();
@@ -22,13 +22,6 @@ function EditEvent() {
     accommodation: false,
   });
   const [venues, setVenues] = useState([]);
-  const [notification, setNotification] = useState({
-    show: false,
-    message: "",
-    icon: null,
-    bgColor: "",
-    color: "",
-  });
   const [setLoading] = useState(true);
   const [setError] = useState(null);
 
@@ -85,22 +78,7 @@ function EditEvent() {
     const isEmpty = requiredFields.every((field) => !eventData[field]);
 
     if (isEmpty) {
-      setNotification({
-        show: true,
-        message: "The form is empty. Please fill in the required fields.",
-        icon: <FaExclamationCircle />,
-        bgColor: "bg-red-100",
-        color: "text-red-500",
-      });
-      setTimeout(() => {
-        setNotification({
-          show: false,
-          message: "",
-          icon: null,
-          bgColor: "",
-          color: "",
-        });
-      }, 2000);
+      toast.error("The form is empty. Please fill in the required fields.");
       return;
     }
 
@@ -121,22 +99,7 @@ function EditEvent() {
       );
 
       if (eventExists && eventData.name !== initialEventData.name) {
-        setNotification({
-          show: true,
-          message: "An event with the same name already exists.",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-        }, 2000);
+        toast.error("An event with the same name already exists");
         setEventData((prevData) => ({
           ...prevData,
           name: initialEventData.name, // Revert to the initial name
@@ -151,61 +114,23 @@ function EditEvent() {
         console.log("Request data:", transformedValues);
 
         await dataService.updateEvent(eventId, transformedValues);
-        setNotification({
-          show: true,
-          message: "Event updated successfully!",
-          icon: <FaCheckCircle />,
-          bgColor: "bg-green-100",
-          color: "text-green-500",
-        });
+        toast.success("Event updated successfully");
         setIsNonInteractive(true); // Make the page non-interactive
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-          setIsNonInteractive(false); // Restore interactivity
-          navigate("/view-events"); // Redirect to /view-events
-        }, 2000);
+        setIsNonInteractive(false); // Restore interactivity
+        navigate("/view-events"); // Redirect to /view-events
       }
     } catch (error) {
       console.error("Error updating event:", error);
 
       // Log detailed error information
       if (error.response && error.response.data) {
-        console.error("Error details:", error.response.data);
-        setNotification({
-          show: true,
-          message: `Error: ${error.response.data.message}`,
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-      } else {
-        setNotification({
-          show: true,
-          message: "An unexpected error occurred.",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
+        toast.error(error.response?.data?.message || "Something went wrong. Try again later");
       }
     }
   };
 
   return (
     <>
-      {notification.show && (
-        <Notification
-          text={notification.message}
-          icon={notification.icon}
-          bgColor={notification.bgColor}
-          color={notification.color}
-        />
-      )}
       <div
         className={`h-full overflow-y-scroll scroll-smooth no-scrollbar${
           isNonInteractive ? " pointer-events-none" : ""

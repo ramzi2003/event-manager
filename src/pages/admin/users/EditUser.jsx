@@ -1,9 +1,9 @@
 import { Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import dataService from "../../../services/dataService";
 import { useNavigate, useParams } from "react-router-dom";
-import Notification from "../../../layout/modals/Notification";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function EditUser() {
   const { userId } = useParams();
@@ -21,13 +21,6 @@ function EditUser() {
   const [department, setDepartment] = useState([]);
   const [userType, setUserType] = useState([]);
   const navigate = useNavigate();
-  const [notification, setNotification] = useState({
-    show: false,
-    message: "",
-    icon: null,
-    bgColor: "",
-    color: "",
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,22 +57,7 @@ function EditUser() {
     const isEmpty = requiredFields.some((field) => !values[field]);
 
     if (isEmpty) {
-      setNotification({
-        show: true,
-        message: "Please fill in all required fields",
-        icon: <FaExclamationCircle />,
-        bgColor: "bg-red-100",
-        color: "text-red-500",
-      });
-      setTimeout(() => {
-        setNotification({
-          show: false,
-          message: "",
-          icon: null,
-          bgColor: "",
-          color: "",
-        });
-      }, 2000);
+      toast.error("Please fill in all required fields");
       setSubmitting(false);
       return;
     }
@@ -102,22 +80,7 @@ function EditUser() {
       );
 
       if (userExists) {
-        setNotification({
-          show: true,
-          message: "A user with this username or email already exists",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-        }, 2000);
+        toast.error("A user with this username or email already exists");
         setSubmitting(false);
         return;
       }
@@ -129,54 +92,17 @@ function EditUser() {
 
       console.log(transformedValues);
       await dataService.updateUser(userId, transformedValues);
-      setNotification({
-        show: true,
-        message: "User updated successfully!",
-        icon: <FaCheckCircle />,
-        bgColor: "bg-green-100",
-        color: "text-green-500",
-      });
-      setIsNonInteractive(true);
-      setTimeout(() => {
-        setNotification({
-          show: false,
-          message: "",
-          icon: null,
-          bgColor: "",
-          color: "",
-        });
-        setIsNonInteractive(false);
-        navigate("/view-users");
-      }, 2000);
+      toast.success("User updated successfully");
+      setIsNonInteractive(false);
+      navigate("/view-users");
     } catch (error) {
       console.error("Error updating user:", error);
 
       if (error.response && error.response.data) {
-        console.error("Error details:", error.response.data);
-        setNotification({
-          show: true,
-          message: `Error: ${error.response.data.message}`,
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-      } else {
-        setNotification({
-          show: true,
-          message: "An unexpected error occurred.",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-        }, 2000);
+        toast.error(
+          error.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
       }
     }
 
@@ -185,14 +111,6 @@ function EditUser() {
 
   return (
     <>
-      {notification.show && (
-        <Notification
-          text={notification.message}
-          icon={notification.icon}
-          bgColor={notification.bgColor}
-          color={notification.color}
-        />
-      )}
       <div
         className={`h-full overflow-y-scroll scroll-smooth no-scrollbar${
           isNonInteractive ? " pointer-events-none" : ""

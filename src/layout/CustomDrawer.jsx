@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Modal from "./modals/Modal";
-import Notification from "./modals/Notification";
 import { MdDeleteOutline, MdDelete } from "react-icons/md";
 import { RiEditLine, RiEditFill } from "react-icons/ri";
 import Drawer from "react-modern-drawer";
@@ -9,6 +8,10 @@ import "react-modern-drawer/dist/index.css";
 import dataService from "../services/dataService";
 import PropTypes from "prop-types";
 import { ArchiveBoxXMarkIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const CustomDrawer = ({
   isOpen,
@@ -24,7 +27,7 @@ const CustomDrawer = ({
   refreshEvents, // Receive the refresh function as a prop
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [notification, setNotification] = useState(null);
+  const navigate = useNavigate();
   const [venues, setVenues] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Add loading state
 
@@ -45,22 +48,27 @@ const CustomDrawer = ({
     const venue = venues.find((v) => v.id === venueId);
     return venue ? venue.name : "Unknown Venue";
   };
-
   const handleDeleteEvent = async () => {
+    setIsModalOpen(false);
+    setIsLoading(true);
+    
     try {
-      setIsModalOpen(false);
-      setIsLoading(true); // Set loading state to true
       await dataService.deleteEvent(selectedEvent.id);
-      setNotification("Event deleted successfully");
-      setTimeout(() => {
-        setNotification(null);
-        setIsLoading(false); // Set loading state to false
-        refreshEvents(); // Refresh the events list
-        setIsOpen(false);
-      }, 3000); // Display notification for 3 seconds
+      toast.success("Event deleted successfully");
+      
+      // Check if refreshEvents exists and is a function before calling it
+      if (typeof refreshEvents === 'function') {
+        refreshEvents();
+      } else {
+        console.warn('refreshEvents is not a function');
+      }
+      
+      setIsOpen(false);
     } catch (error) {
       console.error("Error deleting event:", error);
-      setIsLoading(false); // Set loading state to false in case of error
+      toast.error(error.response?.data?.message || "Failed to delete event");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -97,6 +105,7 @@ const CustomDrawer = ({
                     className="cursor-pointer text-blue-300 hover:text-blue-600 mr-4"
                     onMouseOver={() => setIsHoverSecondary(true)}
                     onMouseOut={() => setIsHoverSecondary(false)}
+                    onClickCapture={() => navigate(`/edit-event/${selectedEvent.id}`)}
                   >
                     {isHoverSecondary ? <RiEditFill /> : <RiEditLine />}
                   </span>
@@ -215,13 +224,6 @@ const CustomDrawer = ({
         color="text-red-500"
         bgColor="bg-red-400 hover:bg-red-500"
       />
-
-      {notification && (
-        <Notification
-          text={notification}
-          icon={<MdDeleteOutline className="text-green-500" />}
-        />
-      )}
 
       {isLoading && (
         <div className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center">

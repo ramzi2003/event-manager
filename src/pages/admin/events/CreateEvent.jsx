@@ -2,18 +2,11 @@ import { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import dataService from "../../../services/dataService";
-import Notification from "../../../layout/modals/Notification";
-import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CreateEvent() {
   const [venues, setVenues] = useState([]);
-  const [notification, setNotification] = useState({
-    show: false,
-    message: "",
-    icon: null,
-    bgColor: "",
-    color: "",
-  });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); // Initialize useNavigate
 
@@ -36,22 +29,7 @@ function CreateEvent() {
     const isEmpty = requiredFields.every((field) => !values[field]);
 
     if (isEmpty) {
-      setNotification({
-        show: true,
-        message: "The form is empty. Please fill in the required fields.",
-        icon: <FaExclamationCircle />,
-        bgColor: "bg-red-100",
-        color: "text-red-500",
-      });
-      setTimeout(() => {
-        setNotification({
-          show: false,
-          message: "",
-          icon: null,
-          bgColor: "",
-          color: "",
-        });
-      }, 2000);
+      toast.error("The form is empty. Please fill in the required fields.");
       setLoading(false);
       setSubmitting(false);
       return;
@@ -64,22 +42,7 @@ function CreateEvent() {
       );
 
       if (eventExists) {
-        setNotification({
-          show: true,
-          message: "An event with the same name already exists.",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-        }, 2000);
+        toast.error("An event with the same name already exists");
         setLoading(false);
       } else {
         const transformedValues = {
@@ -91,46 +54,16 @@ function CreateEvent() {
         console.log("Request data:", transformedValues);
 
         await dataService.createEvent(transformedValues);
-        setNotification({
-          show: true,
-          message: "Event created successfully!",
-          icon: <FaCheckCircle />,
-          bgColor: "bg-green-100",
-          color: "text-green-500",
-        });
-        setTimeout(() => {
-          setNotification({
-            show: false,
-            message: "",
-            icon: null,
-            bgColor: "",
-            color: "",
-          });
-          setLoading(false);
-          navigate("/view-events"); // Redirect to /view-events
-        }, 2000);
+        toast.success("Event created successfully");
+        setLoading(false);
+        navigate("/view-events");
       }
     } catch (error) {
       console.error("Error creating event:", error);
 
       // Log detailed error information
       if (error.response && error.response.data) {
-        console.error("Error details:", error.response.data);
-        setNotification({
-          show: true,
-          message: `Error: ${error.response.data.message}`,
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
-      } else {
-        setNotification({
-          show: true,
-          message: "An unexpected error occurred.",
-          icon: <FaExclamationCircle />,
-          bgColor: "bg-red-100",
-          color: "text-red-500",
-        });
+        toast.error(error.response?.data?.message || "Something went wrong. Try again later");
       }
 
       setLoading(false);
@@ -140,14 +73,6 @@ function CreateEvent() {
 
   return (
     <>
-      {notification.show && (
-        <Notification
-          text={notification.message}
-          icon={notification.icon}
-          bgColor={notification.bgColor}
-          color={notification.color}
-        />
-      )}
       <div
         className={`h-full overflow-y-scroll scroll-smooth no-scrollbar ${
           loading ? "pointer-events-none" : ""

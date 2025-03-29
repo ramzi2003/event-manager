@@ -165,6 +165,7 @@ function DashboardPage() {
           getImportanceClasses={getImportanceClasses}
           tasks={tasks}
           user={user}
+          refreshEvents={() => fetchEvents()}
         />
       )}
     </>

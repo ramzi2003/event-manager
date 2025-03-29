@@ -2,12 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { IoEllipsisHorizontalSharp } from "react-icons/io5";
-import { FaCheckCircle, FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import dataService from "../../../services/dataService";
-import Notification from "../../../layout/modals/Notification";
 import Modal from "../../../layout/modals/Modal";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
 
 const ViewEvents = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date());
@@ -19,11 +20,6 @@ const ViewEvents = () => {
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const [events, setEvents] = useState([]);
   const [venues, setVenues] = useState([]);
-  const [notification, setNotification] = useState({
-    show: false,
-    text: "",
-    icon: null,
-  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
   const accordionContent = useRef(null);
@@ -105,18 +101,10 @@ const ViewEvents = () => {
     try {
       await dataService.deleteEvent(eventToDelete);
       setEvents(events.filter((event) => event.id !== eventToDelete));
-      setNotification({
-                    show: true,
-                    text: "Event deleted successfully!",
-                    icon: <FaCheckCircle />,
-                    bgColor: "bg-green-100",
-                    color: "text-green-500",
-                  });
-      setTimeout(() => {
-        setNotification({ show: false, text: "", icon: null });
-      }, 2000);
+      toast.success("Event deleted successfully");
     } catch (error) {
       console.error("Error deleting event:", error);
+      toast.error(error.response?.data?.message || "Failed to delete event");
     } finally {
       setIsModalOpen(false);
       setEventToDelete(null);
@@ -148,9 +136,6 @@ const ViewEvents = () => {
 
   return (
     <>
-      {notification.show && (
-        <Notification text={notification.text} icon={notification.icon} />
-      )}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
