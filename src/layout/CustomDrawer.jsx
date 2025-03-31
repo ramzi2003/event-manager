@@ -9,9 +9,9 @@ import dataService from "../services/dataService";
 import PropTypes from "prop-types";
 import { ArchiveBoxXMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { IoReturnUpBack } from "react-icons/io5";
 
 const CustomDrawer = ({
   isOpen,
@@ -30,6 +30,17 @@ const CustomDrawer = ({
   const navigate = useNavigate();
   const [venues, setVenues] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [drawerWidth, setDrawerWidth] = useState("40%");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDrawerWidth(window.innerWidth < 768 ? "100%" : "40%");
+    };
+
+    handleResize(); // Set initial width
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchVenues = async () => {
@@ -51,18 +62,18 @@ const CustomDrawer = ({
   const handleDeleteEvent = async () => {
     setIsModalOpen(false);
     setIsLoading(true);
-    
+
     try {
       await dataService.deleteEvent(selectedEvent.id);
       toast.success("Event deleted successfully");
-      
+
       // Check if refreshEvents exists and is a function before calling it
-      if (typeof refreshEvents === 'function') {
+      if (typeof refreshEvents === "function") {
         refreshEvents();
       } else {
-        console.warn('refreshEvents is not a function');
+        console.warn("refreshEvents is not a function");
       }
-      
+
       setIsOpen(false);
     } catch (error) {
       console.error("Error deleting event:", error);
@@ -79,7 +90,7 @@ const CustomDrawer = ({
         onClose={() => setIsOpen(false)}
         direction="right"
         className="p-6 bg-white overflow-hidden"
-        style={{ width: "40%" }}
+        style={{ width: drawerWidth }}
       >
         <div>
           <span
@@ -99,13 +110,22 @@ const CustomDrawer = ({
           </span>
           <div className="px-6 py-8 mx-auto bg-white mt-10 rounded-lg h-[calc(100vh-20px)]">
             <div className="text-right flex justify-end items-center">
+              <button
+                className="peer text-left mr-auto border-transparent border p-2 focus:border-blue-500 rounded-3xl"
+                onClick={() => setIsOpen(false)}
+              >
+                <IoReturnUpBack />
+              </button>
+
               {user.is_admin && (
                 <>
                   <span
                     className="cursor-pointer text-blue-300 hover:text-blue-600 mr-4"
                     onMouseOver={() => setIsHoverSecondary(true)}
                     onMouseOut={() => setIsHoverSecondary(false)}
-                    onClickCapture={() => navigate(`/edit-event/${selectedEvent.id}`)}
+                    onClickCapture={() =>
+                      navigate(`/edit-event/${selectedEvent.id}`)
+                    }
                   >
                     {isHoverSecondary ? <RiEditFill /> : <RiEditLine />}
                   </span>

@@ -5,10 +5,26 @@ import dataService from "../../../services/dataService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return isMobile;
+};
+
 function CreateEvent() {
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); // Initialize useNavigate
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchVenues = async () => {
@@ -63,7 +79,10 @@ function CreateEvent() {
 
       // Log detailed error information
       if (error.response && error.response.data) {
-        toast.error(error.response?.data?.message || "Something went wrong. Try again later");
+        toast.error(
+          error.response?.data?.message ||
+            "Something went wrong. Try again later"
+        );
       }
 
       setLoading(false);
@@ -136,25 +155,51 @@ function CreateEvent() {
                     Description
                   </label>
                 </div>
-                <div className="relative z-0 w-full mb-5 group">
-                  <div className="flex gap-4 items-center">
-                    <Field
-                      type="datetime-local"
-                      name="start_date"
-                      id="start_date"
-                      className="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      required
-                    />
-                    <span className="text-gray-500">-</span>
-                    <Field
-                      type="datetime-local"
-                      name="end_date"
-                      id="end_date"
-                      className="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      required
-                    />
-                  </div>
-                </div>
+                {isMobile ? (
+                  <>
+                    <div className="relative z-0 w-full mb-5 group">
+                      <Field
+                        type="datetime-local"
+                        name="start_date"
+                        id="start_date"
+                        className="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                        required
+                      />
+                    </div>
+                    <div className="relative z-0 w-full mb-5 group">
+                      <Field
+                        type="datetime-local"
+                        name="end_date"
+                        id="end_date"
+                        className="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                        required
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="relative z-0 w-full mb-5 group">
+                      <div className="flex gap-4 items-center">
+                        <Field
+                          type="datetime-local"
+                          name="start_date"
+                          id="start_date"
+                          className="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                          required
+                        />
+                        <span className="text-gray-500">-</span>
+                        <Field
+                          type="datetime-local"
+                          name="end_date"
+                          id="end_date"
+                          className="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 <div className="relative z-0 w-full mb-5 group">
                   <Field
                     as="select"

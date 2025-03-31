@@ -26,6 +26,7 @@ const TasksPage = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false); // Local loading state
+  const [departments, setDepartments] = useState([]);
 
   const handleOpen = (task) => {
     setSelectedTask(task);
@@ -35,6 +36,9 @@ const TasksPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const departmentsData = await dataService.fetchDepartments();
+        setDepartments(departmentsData);
+
         const eventsData = await dataService.fetchEvents();
         setEvents(eventsData);
 
@@ -47,6 +51,11 @@ const TasksPage = () => {
 
     fetchData();
   }, []);
+
+  const getDepartmentName = (departmentId) => {
+    const department = departments.find((dept) => dept.id === departmentId);
+    return department ? department.name : "Unknown";
+  };
 
   useEffect(() => {
     const countTasks = tasks.filter(
@@ -85,10 +94,10 @@ const TasksPage = () => {
             task.id === selectedTask.id ? { ...task, status: newStatus } : task
           )
         );
-        toast.info("Status changed successfully");
+        toast.success("Status changed successfully");
         const tasksData = await dataService.fetchTasks();
-          setTasks(tasksData);
-          setLoading(false);
+        setTasks(tasksData);
+        setLoading(false);
       } catch (error) {
         console.error("Error updating status:", error);
         toast.error(error.response?.data?.message || "Failed to change status");
@@ -242,7 +251,7 @@ const TasksPage = () => {
               return (
                 <li
                   key={task.id}
-                  className="flex justify-between gap-x-6 py-5 select-none cursor-pointer hover:bg-gray-100 px-2"
+                  className=" w-full flex justify-between gap-x-6 py-5 select-none cursor-pointer hover:bg-gray-100 px-2"
                   onClick={() => handleOpen(task)}
                 >
                   <div className="flex min-w-0 gap-x-4">
@@ -255,7 +264,7 @@ const TasksPage = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                  <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
                     <p
                       className={`text-sm/6 ${bgColor} rounded-4xl px-2 flex items-center justify-center`}
                     >
@@ -291,14 +300,14 @@ const TasksPage = () => {
         />
 
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="mt-20 md:mt-0 flex md:min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <DialogPanel
               transition
-              className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 w-1/2 data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+              className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 md:w-1/2 w-full data-closed:sm:translate-y-0 data-closed:sm:scale-95"
             >
               {selectedTask && (
                 <>
-                  <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <div className="bg-white h-full px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div className="sm:flex sm:items-start">
                       <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
                         <div className="flex justify-between items-top">
@@ -321,7 +330,7 @@ const TasksPage = () => {
                           </p>
                         </div>
                         <div className="mt-2">
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-gray-500 text-left">
                             {selectedTask.description}
                           </p>
                         </div>
@@ -330,8 +339,7 @@ const TasksPage = () => {
                   </div>
                   <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row justify-between items-center sm:px-6">
                     <p className="text-sm text-gray-500 italic">
-                      <strong>Responsible Department:</strong>{" "}
-                      {user.department.name}
+                      <strong>Responsible Department:</strong> {getDepartmentName(selectedTask.responsible_department)}
                     </p>
                     <form>
                       <select

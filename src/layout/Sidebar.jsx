@@ -16,8 +16,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/authSlice";
 import { useState, useEffect } from "react";
 import Modal from "./modals/Modal";
+import MobileSidebar from "./MobileSidebar";
 
-function Sidebar() {
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return isMobile;
+};
+
+const Sidebar =() => {
+  const isMobile = useIsMobile();
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -52,6 +69,10 @@ function Sidebar() {
     setIsTasksOpen(isDropdownActive(["/view-tasks", "/create-task"]));
     setIsUsersOpen(isDropdownActive(["/view-users", "/create-user"]));
   }, [location]);
+
+  if (isMobile) {
+    return <MobileSidebar />;
+  }
 
   return (
     <div>

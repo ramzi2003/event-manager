@@ -299,7 +299,7 @@ const ViewTasks = () => {
                     </p>
                   </div>
                 </div>
-                <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
                   <p
                     className={`text-sm/6 ${bgColor} rounded-4xl px-2 flex items-center justify-center`}
                   >
@@ -334,10 +334,10 @@ const ViewTasks = () => {
         />
 
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="mt-20 md:mt-0 flex md:min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <DialogPanel
               transition
-              className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 w-1/2 data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+              className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 md:w-1/2 w-full data-closed:sm:translate-y-0 data-closed:sm:scale-95"
             >
               {selectedTask && (
                 <>
@@ -412,7 +412,7 @@ const ViewTasks = () => {
                           </div>
                         </div>
                         <div className="mt-2">
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-gray-500 text-left">
                             {selectedTask.description}
                           </p>
                         </div>

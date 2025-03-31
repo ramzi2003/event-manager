@@ -4,8 +4,24 @@ import dataService from "../../../services/dataService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return isMobile;
+};
+
 function EditEvent() {
   const { eventId } = useParams();
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [initialEventData, setInitialEventData] = useState({});
   const [isNonInteractive, setIsNonInteractive] = useState(false);
@@ -179,7 +195,34 @@ function EditEvent() {
                 Description
               </label>
             </div>
-            <div className="relative z-0 w-full mb-5 group">
+            {isMobile ? (
+              <>
+               <div className="relative z-0 w-full mb-5 group">
+               <input
+                  type="datetime-local"
+                  name="start_date"
+                  id="start_date"
+                  value={eventData.start_date}
+                  onChange={handleChange}
+                  className="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  required
+                />
+               </div>
+               <div className="relative z-0 w-full mb-5 group">
+               <input
+                  type="datetime-local"
+                  name="end_date"
+                  id="end_date"
+                  value={eventData.end_date}
+                  onChange={handleChange}
+                  className="block py-2.5 px-3 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  required
+                />
+               </div>
+              </>
+            ) : (
+              <>
+              <div className="relative z-0 w-full mb-5 group">
               <div className="flex gap-4 items-center">
                 <input
                   type="datetime-local"
@@ -201,7 +244,11 @@ function EditEvent() {
                   required
                 />
               </div>
-            </div>
+              </div>
+              </>
+            )}
+           
+
             <div className="relative z-0 w-full mb-5 group">
               <select
                 name="venue"

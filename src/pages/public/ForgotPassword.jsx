@@ -26,9 +26,9 @@ function ForgotPassword() {
 
   return (
     <div>
-      <section className="bg-gray-50 dark:bg-gray-900">
+      <section className="bg-white md:bg-gray-50">
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-          <div className="w-full p-6 bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md dark:bg-gray-800 dark:border-gray-700 sm:p-8">
+          <div className="w-full p-6 bg-white rounded-lg md:shadow dark:border md:mt-0 sm:max-w-md dark:bg-gray-800 dark:border-gray-700 sm:p-8">
             <h2 className="mb-6 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Reset Password Request
             </h2>

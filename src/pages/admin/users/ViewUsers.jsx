@@ -49,7 +49,7 @@ const ViewUsers = () => {
       try {
         const departmentsData = await dataService.fetchDepartments();
         setDepartments(departmentsData);
-        console.log(departmentsData);
+     
 
         const userTypesData = await dataService.fetchUserTypes();
         const userTypeKeys = Object.keys(userTypesData);
@@ -58,8 +58,7 @@ const ViewUsers = () => {
         const usersData = await dataService.fetchUsers();
         setUsers(usersData);
         setFilteredUsers(usersData);
-        console.log(usersData);
-        console.log(filteredUsers);
+   
       } catch (error) {
         console.error("Error fetching departments and user types:", error);
       }
@@ -252,7 +251,7 @@ const ViewUsers = () => {
       </div>
       <div className="h-3/4 overflow-y-auto w-full">
         <div className="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
-          <table className="w-full text-left table-fixed">
+          <table className="w-full text-left md:table-fixed">
           <colgroup>
     <col className="w-[20%]" /> {/* Username */}
     <col className="w-[20%]" /> {/* Full Name */}
@@ -309,7 +308,7 @@ const ViewUsers = () => {
                   </td>
                   <td className="p-4 py-5">
   <div className="relative">
-    <p className="text-sm text-slate-500 truncate w-full">
+    <p className="text-sm text-slate-500 md:truncate w-full">
       {user.email}
     </p>
     <span className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 whitespace-nowrap -top-8 left-0 z-10">

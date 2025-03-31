@@ -327,7 +327,7 @@ const ViewEvents = () => {
                   style={{
                     maxHeight:
                       openAccordionId === event.id && accordionContent.current
-                        ? `${accordionContent.current.scrollHeight}px`
+                        ? `${accordionContent.current.scrollHeight + 50}px`
                         : "0px",
                   }}
                   className="overflow-hidden transition-max-height duration-150 ease-in-out"
