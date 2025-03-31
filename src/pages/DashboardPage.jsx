@@ -90,7 +90,7 @@ function DashboardPage() {
 
   return (
     <>
-      {showLoader ? ( // Show loader only if showLoader is true
+      {showLoader ? ( 
         <CustomLoader />
       ) : (
         <div className="h-full overflow-y-scroll px-2 scroll-smooth ">

@@ -66,9 +66,6 @@ function CreateEvent() {
           venue: parseInt(values.venue, 10),
         };
 
-        // Log the request data
-        console.log("Request data:", transformedValues);
-
         await dataService.createEvent(transformedValues);
         toast.success("Event created successfully");
         setLoading(false);

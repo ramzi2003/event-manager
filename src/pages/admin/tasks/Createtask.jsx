@@ -16,7 +16,6 @@ function CreateTask() {
       try {
         const fetchedEvents = await dataService.fetchEvents();
         setEvents(fetchedEvents);
-        console.log(events);
       } catch (error) {
         console.error("Error fetching events:", error);
       }

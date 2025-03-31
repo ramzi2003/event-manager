@@ -284,7 +284,6 @@ const resetPassword = async (resetData) => {
     return response.data;
   } catch (error) {
     console.error("Error reseting password:", error);
-    console.log(resetData)
     throw error;
   }
 };

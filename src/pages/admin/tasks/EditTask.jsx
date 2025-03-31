@@ -114,8 +114,7 @@ function EditTask() {
           due_date: new Date(taskData.due_date).toISOString(),
         };
 
-        // Log the request data
-        console.log("Request data:", transformedValues);
+
 
         await dataService.updateTask(taskId, transformedValues);
         toast.success("Task updated successfully");

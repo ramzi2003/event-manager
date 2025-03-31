@@ -32,7 +32,7 @@ function EditUser() {
         ]);
         setUserData(user);
         setInitialUserData(user);
-        console.log(user);
+  
         setDepartment(departmentData);
         const userTypeKeys = Object.keys(userTypeData);
         setUserType(userTypeKeys);
@@ -90,7 +90,6 @@ function EditUser() {
         department: parseInt(values.department, 10),
       };
 
-      console.log(transformedValues);
       await dataService.updateUser(userId, transformedValues);
       toast.success("User updated successfully");
       setIsNonInteractive(false);

@@ -126,9 +126,6 @@ function EditEvent() {
           venue: parseInt(eventData.venue, 10),
         };
 
-        // Log the request data
-        console.log("Request data:", transformedValues);
-
         await dataService.updateEvent(eventId, transformedValues);
         toast.success("Event updated successfully");
         setIsNonInteractive(true); // Make the page non-interactive

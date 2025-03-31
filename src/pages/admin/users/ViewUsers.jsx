@@ -49,7 +49,6 @@ const ViewUsers = () => {
       try {
         const departmentsData = await dataService.fetchDepartments();
         setDepartments(departmentsData);
-     
 
         const userTypesData = await dataService.fetchUserTypes();
         const userTypeKeys = Object.keys(userTypesData);
@@ -58,7 +57,6 @@ const ViewUsers = () => {
         const usersData = await dataService.fetchUsers();
         setUsers(usersData);
         setFilteredUsers(usersData);
-   
       } catch (error) {
         console.error("Error fetching departments and user types:", error);
       }
@@ -77,7 +75,6 @@ const ViewUsers = () => {
 
   const filterUsers = () => {
     let filtered = users;
-    console.log(selectedDepartment);
     if (selectedDepartment !== "All") {
       filtered = filtered.filter(
         (user) => user.department === selectedDepartment
@@ -252,14 +249,14 @@ const ViewUsers = () => {
       <div className="h-3/4 overflow-y-auto w-full">
         <div className="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
           <table className="w-full text-left md:table-fixed">
-          <colgroup>
-    <col className="w-[20%]" /> {/* Username */}
-    <col className="w-[20%]" /> {/* Full Name */}
-    <col className="w-[25%]" /> {/* Email - more space */}
-    <col className="w-[15%]" /> {/* Department */}
-    <col className="w-[15%]" /> {/* User Type */}
-    <col className="w-[5%]" />  {/* Actions */}
-  </colgroup>
+            <colgroup>
+              <col className="w-[20%]" />
+              <col className="w-[20%]" />
+              <col className="w-[25%]" />
+              <col className="w-[15%]" />
+              <col className="w-[15%]" />
+              <col className="w-[5%]" />
+            </colgroup>
             <thead>
               <tr>
                 <th className="p-4 border-b border-slate-200 bg-slate-50">
@@ -307,15 +304,15 @@ const ViewUsers = () => {
                     </p>
                   </td>
                   <td className="p-4 py-5">
-  <div className="relative">
-    <p className="text-sm text-slate-500 md:truncate w-full">
-      {user.email}
-    </p>
-    <span className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 whitespace-nowrap -top-8 left-0 z-10">
-      {user.email}
-    </span>
-  </div>
-</td>
+                    <div className="relative">
+                      <p className="text-sm text-slate-500 md:truncate w-full">
+                        {user.email}
+                      </p>
+                      <span className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 whitespace-nowrap -top-8 left-0 z-10">
+                        {user.email}
+                      </span>
+                    </div>
+                  </td>
                   <td className="p-4 py-5">
                     <p className="text-sm text-slate-500">
                       {getDepartmentName(user.department)}
