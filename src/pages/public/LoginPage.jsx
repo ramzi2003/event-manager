@@ -72,7 +72,7 @@ function LoginPage() {
     <div>
       <section className="bg-white md:bg-gray-50">
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-          <div className="w-full bg-white rounded-lg md:shadow md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800">
+          <div className="w-full bg-white rounded-lg md:shadow md:mt-0 sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-center select-none">
                 Sign In
@@ -129,7 +129,7 @@ function LoginPage() {
                     <div className="ml-3 text-sm cursor-pointer">
                       <label
                         htmlFor="remember"
-                        className="text-gray-500 dark:text-gray-300 cursor-pointer select-none"
+                        className="text-gray-500 cursor-pointer select-none"
                       >
                         Remember me
                       </label>
@@ -150,7 +150,7 @@ function LoginPage() {
                     <div role="status">
                     <svg
                       aria-hidden="true"
-                      className="inline w-4 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                      className="inline w-4 h-5 text-gray-200 animate-spin fill-blue-600"
                       viewBox="0 0 100 101"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"

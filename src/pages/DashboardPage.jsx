@@ -102,7 +102,7 @@ function DashboardPage() {
                   key={event.id}
                   className="mb-4 ml-8 border-b border-gray-200 pb-4"
                 >
-                  <span className="absolute flex items-center justify-center w-5 h-5 rounded-full -left-2.5 ring-4 ring-white dark:ring-gray-900">
+                  <span className="absolute flex items-center justify-center w-5 h-5 rounded-full -left-2.5 ring-4 ring-white">
                     <svg
                       aria-hidden="true"
                       className={`w-5 h-5 ${iconColor}`}
@@ -119,10 +119,10 @@ function DashboardPage() {
                       year: "numeric",
                     })}
                   </time>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-gray-900">
                     {event.name}
                   </h3>
-                  <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
+                  <p className="mb-4 text-base font-normal text-gray-500">
                     {event.description}
                   </p>
                   <button
